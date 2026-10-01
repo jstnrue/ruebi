@@ -1,0 +1,1397 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rübi Rückbildungs-App</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2B0F1E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rübi">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Figtree:wght@300..900&display=swap">
+<style>
+/* One committed look: a dark plum showcase around a light, photo-led app. */
+:root{
+  color-scheme: dark;
+  --display:'Bricolage Grotesque', 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --ui:'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ease:cubic-bezier(.32,.72,0,1);
+
+  /* showcase */
+  --night:#150810;
+  --on-night:#F7E8EF;
+  --on-night-2:#C9B0BC;
+  --on-night-3:#8E7481;
+  --night-line:rgba(255,235,244,.1);
+
+  /* app */
+  --bg:#F4F1F1;
+  --surface:#FFFFFF;
+  --ink:#1D1418;
+  --ink-2:#675A60;
+  --ink-3:#978A90;
+  --line:rgba(29,20,24,.07);
+  --line-2:rgba(29,20,24,.13);
+  --rose:#C2185B;
+  --rose-2:#A0124A;
+  --blush:#FBE3EC;
+  --petal:#FF9EC2;
+  --plum:#2B0F1E;
+  --wk-past:#EDB3C9;
+  --wk-next:#E7E0E3;
+  --ok:#1C7F52;
+  --ok-bg:#DFF2E8;
+  --warn:#A9570A;
+  --warn-bg:#FCEEDC;
+  --deep:#140910;
+  --deep-2:#221119;
+  --sh-1:0 1px 2px rgba(43,15,30,.05),0 8px 24px -14px rgba(43,15,30,.18);
+  --sh-2:0 2px 4px rgba(43,15,30,.08),0 22px 40px -18px rgba(43,15,30,.45);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--on-night);font:16px/1.5 var(--ui);-webkit-font-smoothing:antialiased;position:relative;min-height:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+::selection{background:rgba(255,158,194,.35)}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,[tabindex]:focus-visible,a:focus-visible{outline:2px solid var(--petal);outline-offset:2px}
+.app button:focus-visible,.app [tabindex]:focus-visible{outline-color:var(--rose)}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+img{display:block;max-width:100%}
+
+/* ================= Showcase page ================= */
+.shell{position:relative;z-index:1;
+  background:radial-gradient(900px 760px at 80% 22%,rgba(194,24,91,.30),transparent 62%),radial-gradient(700px 600px at 0% 100%,rgba(122,22,72,.28),transparent 60%)}
+.topline{max-width:1180px;margin:0 auto;padding-inline:28px;padding-block:22px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--on-night-2)}
+.topline b{color:var(--on-night);font-weight:650}
+.topline span:last-child{border:1px solid var(--night-line);border-radius:10px;padding:5px 10px;font-size:12.5px;white-space:nowrap}
+.page{max-width:1180px;margin:0 auto;padding-inline:28px;padding-block:40px 72px;display:grid;
+  grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"intro stage" "concept stage";column-gap:72px;row-gap:56px;align-items:start}
+.intro{grid-area:intro;display:grid;gap:26px}
+.stage{grid-area:stage;position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px)}
+.concept{grid-area:concept}
+
+.wordmark{font-family:var(--display);font-weight:700;font-variation-settings:"wdth" 100,"opsz" 96;font-size:clamp(96px,11vw,160px);line-height:.82;letter-spacing:-.04em;color:#FFF1F6;display:flex;align-items:flex-end;gap:.06em}
+.wordmark::after{content:"";width:.16em;height:.16em;border-radius:50%;background:var(--rose);margin-bottom:.08em;box-shadow:0 0 40px 6px rgba(194,24,91,.55)}
+.pitch{font-size:clamp(19px,1.7vw,22px);line-height:1.45;color:var(--on-night-2);max-width:30em}
+.pitch b{color:var(--on-night);font-weight:650}
+
+.role{display:inline-grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.06);border:1px solid var(--night-line);border-radius:16px;padding:4px;width:max-content;max-width:100%}
+.role button{border:0;background:none;border-radius:12px;padding:10px 18px;font-weight:650;font-size:14px;color:var(--on-night-2);transition:background-color .2s,color .2s}
+.role button[aria-pressed="true"]{background:#FFF1F6;color:var(--plum)}
+
+.jump{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 28px}
+.jgroup{display:grid;gap:10px;align-content:start}
+.jgroup h2{font-size:13px;font-weight:700;color:var(--on-night-3);letter-spacing:.01em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--night-line);background:rgba(255,255,255,.04);border-radius:12px;padding:8px 12px;font-size:13.5px;font-weight:550;color:var(--on-night-2);transition:background-color .2s,color .2s,border-color .2s}
+.chip:hover{background:rgba(255,255,255,.1);color:var(--on-night)}
+.chip.on{background:#FFF1F6;border-color:#FFF1F6;color:var(--plum)}
+.chip.hot{border-color:rgba(255,158,194,.55);color:var(--petal)}
+.chip.hot.on{background:var(--rose);border-color:var(--rose);color:#fff}
+
+.concept{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px 48px}
+.cblock{display:grid;gap:12px;align-content:start}
+.cblock h2{font-family:var(--display);font-weight:720;font-size:28px;line-height:1.05;letter-spacing:-.03em;color:#FFF1F6}
+.cblock p,.cblock li{font-size:15px;line-height:1.6;color:var(--on-night-2)}
+.cblock b{color:var(--on-night);font-weight:650}
+.cblock ul,.cblock ol{margin:0;padding-left:20px;display:grid;gap:8px}
+.cblock li::marker{color:var(--petal)}
+.costs{width:100%;border-collapse:collapse;font-size:14px}
+.costs td{padding:9px 0;border-bottom:1px solid var(--night-line);vertical-align:top;color:var(--on-night-2)}
+.costs td:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--on-night);font-weight:650;padding-left:14px}
+.costs tr.sum td{border-bottom:0;color:#FFF1F6;font-weight:700;padding-top:12px}
+.foot{grid-column:1/-1;font-size:13px;color:var(--on-night-3);border-top:1px solid var(--night-line);padding-top:18px}
+.foot code{font-size:12.5px;color:var(--on-night-2)}
+
+@media (max-width:940px){
+  .topline{padding-inline:16px}
+  .page{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "concept";padding-inline:16px;padding-block:24px 48px;row-gap:36px}
+  .stage{position:static;justify-self:center;width:100%;max-width:400px}
+  .concept{grid-template-columns:minmax(0,1fr);gap:36px}
+}
+@media (max-width:520px){ .jump{grid-template-columns:minmax(0,1fr)} }
+
+/* ================= Phone ================= */
+.phone{width:100%;height:min(840px,calc(100dvh - 48px));min-height:660px;border-radius:56px;padding:11px;background:#0B0508;
+  box-shadow:0 0 0 1px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.06),0 60px 120px -40px rgba(194,24,91,.55),0 30px 60px -30px rgba(0,0,0,.8)}
+.app{color-scheme:light;position:relative;height:100%;border-radius:45px;overflow:hidden;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;font-size:15px}
+@media (max-width:480px){
+  .phone{border-radius:44px;padding:7px;height:calc(100dvh - 20px);min-height:600px}
+  .app{border-radius:37px}
+}
+.sbar{flex:none;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:13px 28px 4px;font-weight:650;font-size:14px;position:relative;z-index:6;transition:color .2s}
+.sbar .island{width:96px;height:28px;border-radius:16px;background:#0B0508}
+.sbar svg{justify-self:end}
+.app.dark-top .sbar{color:#fff;background:var(--deep)}
+.scroll{flex:1;overflow-y:auto;padding:4px 18px 118px;scrollbar-width:none;overscroll-behavior:contain}
+.scroll::-webkit-scrollbar{display:none}
+.view:not([hidden]){animation:fade .22s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* tab bar */
+.tabbar{position:absolute;left:14px;right:14px;bottom:14px;z-index:4;display:flex;gap:4px;padding:6px;border-radius:26px;background:rgba(255,255,255,.84);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 12px 30px -10px rgba(43,15,30,.28),0 0 0 1px var(--line)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;border-radius:20px;padding:7px 0 6px;font-size:11px;font-weight:600;color:var(--ink-3);transition:background-color .2s,color .2s}
+.tab[aria-current="true"]{background:var(--blush);color:var(--rose)}
+.ic{display:block;flex:none}
+
+/* shared app type */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:12px}
+.date{font-size:13.5px;color:var(--ink-2);font-weight:550}
+.display{font-family:var(--display);font-weight:760;font-size:32px;line-height:1.02;letter-spacing:-.035em;margin-top:3px;font-variation-settings:"opsz" 48}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:28px 2px 12px}
+.sec-h h3{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.02em}
+.muted{font-size:13px;color:var(--ink-3);font-weight:500}
+.fine{font-size:12.5px;color:var(--ink-3);margin:12px 4px 0}
+.me-btn{width:46px;height:46px;border-radius:15px;border:0;background:var(--blush);color:var(--rose-2);font-weight:750;font-size:14.5px;flex:none;transition:transform .15s var(--ease)}
+.me-btn:active{transform:scale(.95)}
+.me-img{width:46px;height:46px;border-radius:15px;object-fit:cover;flex:none}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:16px;font-weight:650;font-size:14.5px;padding:13px 16px;line-height:1.2;transition:transform .15s var(--ease),background-color .2s,box-shadow .2s}
+.btn:active{transform:scale(.97)}
+.btn.rose{background:var(--rose);color:#fff;box-shadow:0 8px 20px -10px rgba(194,24,91,.9)}
+.btn.rose:hover{background:var(--rose-2)}
+.btn.glass{background:rgba(255,255,255,.13);color:#fff}
+.btn.glass:hover{background:rgba(255,255,255,.2)}
+.btn.dark{background:var(--plum);color:#fff}
+.btn.dark:hover{background:#40182D}
+.btn.line{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.btn.line:hover{box-shadow:inset 0 0 0 1px var(--rose);color:var(--rose-2)}
+.btn.full{width:100%}
+.btn[disabled]{background:#E4DCDF;color:var(--ink-3);box-shadow:none;cursor:not-allowed;transform:none}
+
+/* ---- Heute ---- */
+.weeks{margin-top:18px;background:var(--surface);border-radius:22px;padding:14px 14px 12px;box-shadow:var(--sh-1)}
+.weeks-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.weeks-head b{font-family:var(--display);font-size:21px;font-weight:750;letter-spacing:-.02em}
+.weeks-head span{font-size:13px;color:var(--ink-2)}
+.wgrid{display:grid;grid-template-columns:8fr 8fr 4fr;gap:9px;margin-top:12px}
+.wgroup{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;align-items:end;height:30px}
+.wgroup i{display:block;height:13px;border-radius:3px;background:var(--wk-next)}
+.wgroup i.past{background:var(--wk-past)}
+.wgroup i.now{height:30px;background:var(--rose);border-radius:4px}
+.wlab{font-size:11.5px;color:var(--ink-3);margin-top:7px;font-weight:550}
+.wlab.on{color:var(--rose);font-weight:700}
+
+.hero{position:relative;margin-top:14px;height:320px;border-radius:30px;overflow:hidden;color:#fff;cursor:pointer;isolation:isolate;box-shadow:var(--sh-2)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:64% 35%;z-index:-2;transition:transform .8s var(--ease)}
+.hero:hover img{transform:scale(1.04)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(43,15,30,0) 32%,rgba(43,15,30,.5) 60%,rgba(35,11,24,.93) 100%)}
+.tag{position:absolute;left:14px;top:14px;background:rgba(255,255,255,.92);color:var(--plum);font-size:12px;font-weight:700;border-radius:10px;padding:5px 9px}
+.hero-foot{position:absolute;left:18px;right:14px;bottom:16px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hero h3{font-family:var(--display);font-size:26px;font-weight:730;letter-spacing:-.03em;line-height:1.02}
+.hero p{font-size:13px;color:rgba(255,255,255,.8);margin-top:5px}
+.play-lg{width:60px;height:60px;border-radius:50%;background:#fff;color:var(--rose);display:grid;place-items:center;flex:none;box-shadow:0 12px 26px -8px rgba(0,0,0,.55);transition:transform .2s var(--ease)}
+.play-lg .ic{margin-left:3px}
+.hero:hover .play-lg{transform:scale(1.06)}
+
+.livebox{margin-top:12px;border-radius:28px;background:radial-gradient(130% 140% at 100% 0%,#6E1B45 0%,var(--plum) 58%);color:#fff;padding:16px;display:grid;gap:14px;box-shadow:var(--sh-2)}
+.lb-top{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center}
+.face{width:48px;height:48px;border-radius:15px;object-fit:cover}
+.lb-t{font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:7px}
+.lb-t .pulse{width:7px;height:7px;border-radius:50%;background:var(--petal);box-shadow:0 0 0 4px rgba(255,158,194,.2)}
+.lb-m{font-size:12.5px;color:rgba(255,255,255,.7);margin-top:1px}
+.lb-count{text-align:right;line-height:1}
+.lb-count b{display:block;font-family:var(--display);font-variation-settings:"wdth" 75;font-size:42px;font-weight:700;letter-spacing:-.02em;color:var(--petal)}
+.lb-count span{font-size:11.5px;color:rgba(255,255,255,.65)}
+.lb-actions{display:grid;grid-template-columns:1fr auto;gap:8px}
+
+.hscroll{display:grid;grid-auto-flow:column;grid-auto-columns:146px;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:-18px;padding-inline:18px;padding-block:0 4px;scroll-padding-inline:18px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.mini{scroll-snap-align:start;border:0;background:none;padding:0;text-align:left;display:grid;gap:9px;align-content:start}
+.mini .ph{height:120px;border-radius:22px;overflow:hidden;background:var(--blush);display:grid;place-items:center;color:var(--rose)}
+.mini img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.mini:hover img{transform:scale(1.05)}
+.mini b{display:block;font-size:14px;font-weight:700;line-height:1.25}
+.mini small{display:block;font-size:12.5px;color:var(--ink-2)}
+
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{display:grid;justify-items:center;gap:7px;padding:9px 0 10px;border-radius:16px;background:var(--surface);font-size:12px;color:var(--ink-3);font-weight:650}
+.day i{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:var(--bg)}
+.day.done i{background:var(--rose);color:#fff}
+.day.today{box-shadow:inset 0 0 0 1.5px var(--rose);color:var(--rose)}
+
+.tip{margin:26px 0 0;display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:end}
+.tip img{width:40px;height:40px;border-radius:13px;object-fit:cover}
+.tip blockquote{margin:0;background:var(--surface);border-radius:20px 20px 20px 6px;padding:13px 15px;font-size:15px;line-height:1.45;font-weight:500;box-shadow:var(--sh-1)}
+.tip figcaption{grid-column:2;font-size:12.5px;color:var(--ink-3);padding-left:4px}
+
+/* ---- Programm ---- */
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#E8E1E4;border-radius:15px;padding:4px;margin-top:18px}
+.seg3 button{border:0;background:none;border-radius:11px;padding:9px 4px;font-size:13.5px;font-weight:650;color:var(--ink-2);transition:background-color .2s,color .2s}
+.seg3 button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(43,15,30,.14)}
+.note{display:flex;gap:10px;align-items:center;margin-top:12px;padding:11px 13px;border-radius:15px;font-size:13px;font-weight:600;background:var(--ok-bg);color:var(--ok)}
+.note.lock{background:#ECE6E8;color:var(--ink-2)}
+.ulist{list-style:none;margin:12px 0 0;padding:6px;background:var(--surface);border-radius:24px;box-shadow:var(--sh-1)}
+.u{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;padding:10px;border-radius:18px;position:relative}
+.u + .u::before{content:"";position:absolute;left:64px;right:12px;top:0;height:1px;background:var(--line)}
+.u.now::before,.u.now + .u::before{display:none}
+.u-no{width:42px;height:42px;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-family:var(--display);font-weight:720;font-size:16px;color:var(--ink-2)}
+.u b{display:block;font-size:14.5px;font-weight:700;line-height:1.3}
+.u small{display:block;font-size:12.5px;color:var(--ink-3)}
+.u-st{min-width:34px;height:34px;border-radius:17px;display:grid;place-items:center;color:var(--ink-3);font-size:12.5px;font-weight:650;white-space:nowrap}
+.u.done .u-no{background:var(--ok-bg);color:var(--ok)}
+.u.done b{color:var(--ink-2)}
+.u.now{background:var(--blush);cursor:pointer}
+.u.now .u-no{background:var(--rose);color:#fff}
+.u.now .u-st{background:var(--rose);color:#fff}
+.u.locked b,.u.locked .u-no{color:var(--ink-3)}
+
+/* ---- Live ---- */
+.nextlive{position:relative;margin-top:18px;border-radius:30px;overflow:hidden;color:#fff;isolation:isolate;min-height:340px;display:flex;align-items:flex-end;box-shadow:var(--sh-2)}
+.nextlive img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:51% 18%;z-index:-2}
+.nextlive::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(43,15,30,.05) 25%,rgba(43,15,30,.6) 55%,rgba(30,9,20,.95) 100%)}
+.nl-when{position:absolute;left:14px;top:14px;display:inline-flex;align-items:center;gap:7px;background:rgba(20,9,16,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:11px;padding:6px 10px;font-size:12.5px;font-weight:650}
+.nl-when i{width:7px;height:7px;border-radius:50%;background:var(--petal)}
+.nl-body{padding:18px;width:100%;display:grid;gap:4px}
+.nl-body h3{font-family:var(--display);font-size:27px;font-weight:730;letter-spacing:-.03em;line-height:1.02}
+.nl-body p{font-size:13.5px;color:rgba(255,255,255,.78)}
+.nl-body .btn{margin-top:12px}
+.track{list-style:none;margin:0;padding:14px 8px 12px;display:grid;grid-template-columns:repeat(8,1fr);background:var(--surface);border-radius:22px;position:relative;box-shadow:var(--sh-1)}
+.track::before{content:"";position:absolute;left:calc(6.25% + 6px);right:calc(6.25% + 6px);top:27px;height:2px;background:var(--wk-next)}
+.tk{display:grid;justify-items:center;gap:7px;position:relative;font-size:11px;color:var(--ink-3);font-weight:600;font-variant-numeric:tabular-nums}
+.tk i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface);box-shadow:inset 0 0 0 2px var(--wk-next);color:#fff}
+.tk.done i{background:var(--rose);box-shadow:none}
+.tk.miss i{background:var(--warn-bg);box-shadow:inset 0 0 0 2px var(--warn);color:var(--warn)}
+.tk.next i{box-shadow:inset 0 0 0 2px var(--rose),0 0 0 5px var(--blush)}
+.tk.next{color:var(--rose);font-weight:750}
+.catchup{margin-top:10px;width:100%;display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;text-align:left;border:0;background:var(--warn-bg);color:var(--ink);border-radius:18px;padding:11px 12px;transition:transform .15s var(--ease)}
+.catchup:active{transform:scale(.98)}
+.catchup .ci{width:38px;height:38px;border-radius:12px;background:#fff;color:var(--warn);display:grid;place-items:center}
+.catchup b{display:block;font-size:14px;font-weight:700}
+.catchup small{display:block;font-size:12.5px;color:var(--ink-2)}
+.glist{list-style:none;margin:0;padding:4px 16px;background:var(--surface);border-radius:22px;box-shadow:var(--sh-1)}
+.gl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;font-size:14.5px}
+.gl + .gl{border-top:1px solid var(--line)}
+.gl .val{font-size:13px;color:var(--ink-3);text-align:right}
+.soft{font-size:12px;font-weight:650;border-radius:9px;padding:4px 9px;background:var(--bg);color:var(--ink-2);white-space:nowrap}
+.soft.ok{background:var(--ok-bg);color:var(--ok)}
+.soft.warn{background:var(--warn-bg);color:var(--warn)}
+.soft.rose{background:var(--blush);color:var(--rose-2)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block;margin-right:6px;vertical-align:1px}
+
+/* ---- Ich ---- */
+.profile{display:flex;gap:14px;align-items:center;padding-top:14px}
+.avatar-lg{width:66px;height:66px;border-radius:21px;background:var(--blush);color:var(--rose-2);display:grid;place-items:center;font-family:var(--display);font-weight:760;font-size:24px;letter-spacing:-.02em;flex:none}
+.profile .display{font-size:28px}
+.chart{background:var(--surface);border-radius:22px;padding:24px 14px 12px;box-shadow:var(--sh-1)}
+.bars{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;align-items:end;height:118px;border-bottom:1px solid var(--line)}
+.bar{position:relative;background:var(--wk-past);border-radius:7px 7px 3px 3px;min-height:4px}
+.bar.cur{background:var(--rose)}
+.bar span{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);font-size:11px;font-weight:750;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar.cur span{color:var(--rose)}
+.bx{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin-top:7px;font-size:10.5px;color:var(--ink-3);text-align:center;font-weight:600}
+.checks-q{margin:0;padding:6px 16px 14px;background:var(--surface);border-radius:22px;box-shadow:var(--sh-1)}
+.q{display:grid;gap:9px;padding:12px 0}
+.q + .q{border-top:1px solid var(--line)}
+.q p{font-size:14px;font-weight:600;line-height:1.35}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--bg);border-radius:12px;padding:3px}
+.seg button{border:0;background:none;border-radius:9px;padding:8px 4px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--rose-2);box-shadow:0 1px 3px rgba(43,15,30,.14)}
+.q-res{font-size:13px;font-weight:550;color:var(--rose-2);background:var(--blush);border-radius:13px;padding:10px 12px;margin-top:4px;line-height:1.4}
+
+/* ---- Susann ---- */
+.cp{margin-top:18px;background:var(--surface);border-radius:26px;padding:16px;display:grid;gap:14px;box-shadow:var(--sh-1);transition:box-shadow .3s}
+.cp.is-live{box-shadow:0 0 0 2px var(--rose),0 18px 40px -20px rgba(194,24,91,.6)}
+.cp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.cp h3{font-family:var(--display);font-size:21px;font-weight:720;letter-spacing:-.025em;line-height:1.1}
+.cp-head p{font-size:13px;color:var(--ink-2);margin-top:3px}
+.meter-row{display:grid;gap:7px}
+.meter{height:8px;border-radius:4px;background:var(--bg);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--rose);border-radius:4px;transition:width .4s var(--ease)}
+.meter-l{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:550}
+.cp-acts{display:grid;grid-template-columns:1fr auto;gap:8px}
+.room-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:12px 0}
+.room-row + .room-row{border-top:1px solid var(--line)}
+.room-ic{width:36px;height:36px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--ink-2)}
+.room-row b{display:block;font-size:14.5px;font-weight:700}
+.room-row small{display:block;font-size:12.5px;color:var(--ink-3)}
+.pushchips{display:flex;flex-wrap:wrap;gap:7px}
+.pushchips button{border:0;background:var(--surface);border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color .2s,color .2s}
+.pushchips button[aria-pressed="true"]{background:var(--plum);color:#fff;box-shadow:none}
+.person{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:9px 0;font-size:14px;font-weight:550}
+.person + .person{border-top:1px solid var(--line)}
+.pav{width:34px;height:34px;border-radius:11px;background:var(--bg);color:var(--ink-2);display:grid;place-items:center;font-size:11.5px;font-weight:750}
+.tablewrap{overflow-x:auto;margin-top:16px;background:var(--surface);border-radius:22px;box-shadow:var(--sh-1)}
+.att{border-collapse:collapse;font-size:13px;min-width:100%;font-variant-numeric:tabular-nums}
+.att th,.att td{padding:10px 8px;text-align:center;white-space:nowrap}
+.att tbody tr + tr td{border-top:1px solid var(--line)}
+.att th{font-weight:650;font-size:11px;color:var(--ink-3);line-height:1.3;padding-top:14px}
+.att th.today{color:var(--rose)}
+.att td:first-child,.att th:first-child{text-align:left;position:sticky;left:0;background:var(--surface);padding-left:16px;font-weight:600}
+.att .y{color:var(--rose)}
+.att .n{color:var(--warn)}
+.att .o{color:var(--ink-3)}
+.att .sum{font-weight:750}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin:10px 4px 0;font-weight:550}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.libbar{display:flex;gap:3px;height:10px;margin-top:18px}
+.libbar i{display:block;height:100%;border-radius:3px}
+.libleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:9px;font-weight:550}
+.libleg span{display:inline-flex;align-items:center;gap:6px}
+.libleg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.filters button{border:0;background:var(--surface);border-radius:11px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.ex{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 0}
+.ex + .ex{border-top:1px solid var(--line)}
+.ex b{font-size:14.5px;font-weight:650}
+.ex small{display:block;font-size:12.5px;color:var(--ink-3)}
+.mt{font-size:11.5px;font-weight:700;border-radius:8px;padding:4px 8px}
+.mt.video{background:#E4ECF8;color:#2C5498}
+.mt.d3{background:#EEE5F7;color:#6A2E9D}
+.mt.anim{background:var(--blush);color:var(--rose-2)}
+.mt.miss{background:var(--warn-bg);color:var(--warn)}
+
+/* ================= Overlays ================= */
+.overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;background:var(--bg)}
+.overlay:not([hidden]){animation:sheet .38s var(--ease)}
+@keyframes sheet{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+.ov-top{flex:none;display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;padding:52px 16px 10px}
+.ov-title{display:grid;line-height:1.25;min-width:0}
+.ov-title b{font-size:15px;font-weight:700}
+.ov-title small{font-size:12.5px;color:var(--ink-3);font-weight:550}
+.icbtn{width:42px;height:42px;border-radius:14px;border:0;background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:var(--sh-1);transition:transform .15s var(--ease)}
+.icbtn:active{transform:scale(.94)}
+.ov-scroll{flex:1;overflow-y:auto;padding:6px 18px 28px;scrollbar-width:none}
+.ov-scroll::-webkit-scrollbar{display:none}
+.dark-ov{background:var(--deep);color:#fff}
+.dark-ov .icbtn{background:rgba(255,255,255,.09);color:#fff;box-shadow:none}
+.dark-ov .ov-title small{color:rgba(255,255,255,.55)}
+
+/* player */
+.pl-time{font-family:var(--display);font-variation-settings:"wdth" 75;font-weight:700;font-size:22px;font-variant-numeric:tabular-nums;color:var(--petal)}
+.segs{flex:none;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:0 18px 14px}
+.segs i{height:4px;border-radius:2px;background:rgba(255,255,255,.14)}
+.segs i.done{background:rgba(255,255,255,.55)}
+.segs i.now{background:var(--petal)}
+.pl-stage{position:relative;border-radius:30px;background:radial-gradient(85% 95% at 50% 75%,#541835 0%,#23101A 72%);aspect-ratio:16/11.5;max-width:100%;overflow:hidden;display:grid;place-items:center}
+.pl-stage svg{width:100%;height:100%}
+.pl-chip{position:absolute;left:12px;top:12px;font-size:11.5px;font-weight:650;color:rgba(255,255,255,.72);background:rgba(255,255,255,.08);border-radius:9px;padding:5px 9px}
+.ph-box{display:grid;gap:10px;justify-items:center;text-align:center;padding:26px;color:rgba(255,255,255,.75);font-size:14px;max-width:270px}
+.pl-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:20px}
+.pl-row h3{font-family:var(--display);font-weight:730;font-size:31px;letter-spacing:-.035em;line-height:1}
+.pl-row p{font-size:13px;color:rgba(255,255,255,.58);margin-top:7px;font-weight:550}
+.reps{font-family:var(--display);font-variation-settings:"wdth" 75;line-height:.82;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.reps b{font-size:66px;font-weight:700;color:#fff;letter-spacing:-.02em}
+.reps span{font-size:24px;font-weight:650;color:rgba(255,255,255,.4)}
+.breath{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:20px}
+.breath span{font-family:var(--display);font-size:21px;font-weight:720;color:var(--petal);min-width:100px;letter-spacing:-.02em}
+.btrack{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+.btrack i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--petal));border-radius:3px}
+.cue{font-size:16.5px;line-height:1.45;color:rgba(255,255,255,.88);margin-top:10px;min-height:4.4em}
+.done-chip{display:flex;gap:8px;align-items:center;justify-content:center;background:rgba(28,127,82,.22);color:#9BE3BF;border-radius:14px;padding:10px;font-size:13.5px;font-weight:650;margin-top:10px}
+.controls{display:flex;justify-content:center;align-items:center;gap:30px;margin-top:18px}
+.playbtn{width:78px;height:78px;border-radius:50%;border:0;background:var(--rose);color:#fff;display:grid;place-items:center;box-shadow:0 16px 36px -12px rgba(194,24,91,.9);transition:transform .15s var(--ease),background-color .2s}
+.playbtn:hover{background:#D0206A}
+.playbtn:active{transform:scale(.95)}
+.linkbtn{display:block;margin:18px auto 0;border:0;background:none;color:var(--petal);font-weight:650;font-size:14px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.voice{display:flex;gap:8px;align-items:center;justify-content:center;font-size:12.5px;color:rgba(255,255,255,.6);margin-top:16px}
+.safety{font-size:12px;color:rgba(255,255,255,.45);text-align:center;margin-top:8px;padding-inline:10px;line-height:1.45}
+
+/* tech check */
+.selfview{position:relative;border-radius:28px;aspect-ratio:4/3.2;max-width:100%;overflow:hidden;background:radial-gradient(90% 90% at 50% 30%,#4A2536,#1D0E16);display:grid;place-items:center;color:#fff}
+.selfview .ini{width:84px;height:84px;border-radius:28px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-family:var(--display);font-weight:720;font-size:30px}
+.selfview small{position:absolute;left:14px;bottom:12px;font-size:12px;color:rgba(255,255,255,.72);font-weight:550}
+.chk{display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:center;padding:12px 0;font-size:14.5px;font-weight:600}
+.chk + .chk{border-top:1px solid var(--line)}
+.chk .s{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--bg);color:var(--ink-3)}
+.chk.ok .s{background:var(--ok-bg);color:var(--ok)}
+.chk .r{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;font-weight:550;display:flex;align-items:center}
+.chk.ok .r{color:var(--ok)}
+.chk.wait .s i{width:12px;height:12px;border-radius:50%;border:2px solid var(--rose);border-right-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lvl{display:inline-flex;gap:2px;align-items:flex-end;height:12px;margin-right:7px}
+.lvl i{width:3px;background:var(--ok);border-radius:1px;animation:lvl 1s ease-in-out infinite}
+.lvl i:nth-child(2){animation-delay:.15s}.lvl i:nth-child(3){animation-delay:.3s}.lvl i:nth-child(4){animation-delay:.45s}
+@keyframes lvl{0%,100%{height:3px}50%{height:12px}}
+.tgl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;font-size:14.5px;font-weight:600}
+.tgl + .tgl{border-top:1px solid var(--line)}
+.sw{width:50px;height:30px;border-radius:15px;border:0;background:#DCD3D7;position:relative;padding:0;flex:none;transition:background-color .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.22);transition:transform .25s var(--ease)}
+.sw[aria-checked="true"]{background:var(--rose)}
+.sw[aria-checked="true"]::after{transform:translateX(20px)}
+.hint{font-size:12.5px;color:var(--ink-3);text-align:center;margin-top:12px;font-weight:550}
+
+/* live room */
+.rstatus{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px 10px;flex-wrap:wrap}
+.rs{display:inline-flex;align-items:center;gap:8px;border-radius:11px;padding:6px 11px;font-size:12.5px;font-weight:650;background:rgba(58,170,115,.16);color:#8EE0B6;transition:background-color .3s,color .3s}
+.rs.warn{background:rgba(236,160,60,.18);color:#F7C27C}
+.rs .dot{margin:0;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.rmeta{font-size:12.5px;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums;font-weight:550}
+.rbody{flex:1;overflow-y:auto;padding:0 12px 12px;display:grid;gap:8px;align-content:start;scrollbar-width:none}
+.rbody::-webkit-scrollbar{display:none}
+.main-tile{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/3.4;max-width:100%;background:#2A1520;transition:opacity .35s,filter .35s}
+.main-tile img{width:100%;height:100%;object-fit:cover;object-position:51% 22%}
+.tname{position:absolute;left:10px;bottom:10px;font-size:12px;font-weight:650;background:rgba(20,9,16,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:9px;padding:4px 9px}
+.push{position:absolute;left:10px;right:10px;top:10px;background:rgba(255,255,255,.95);color:var(--ink);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+.push .pi{width:34px;height:34px;border-radius:11px;background:var(--blush);color:var(--rose);display:grid;place-items:center}
+.push small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600}
+.push b{display:block;font-size:14.5px;font-weight:700;line-height:1.25}
+.ptiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;transition:opacity .35s,filter .35s}
+.pt{position:relative;border-radius:16px;aspect-ratio:1;display:grid;place-items:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.88)}
+.pt.me{box-shadow:inset 0 0 0 2px var(--petal)}
+.pt .off{position:absolute;right:6px;bottom:6px;color:rgba(255,255,255,.5)}
+.pt .hand{position:absolute;left:6px;top:6px;color:#F7C27C}
+.dim{opacity:.35;filter:grayscale(.85) blur(1px)}
+.demo-row{display:flex;justify-content:center;padding-block:2px}
+.demo-btn{border:1px dashed rgba(255,158,194,.5);background:none;color:var(--petal);border-radius:12px;padding:9px 14px;font-size:12.5px;font-weight:650}
+.demo-btn[disabled]{opacity:.4;cursor:default}
+.rctrl{flex:none;display:flex;justify-content:space-around;padding:12px 8px 22px;background:var(--deep-2)}
+.rc{display:grid;justify-items:center;gap:5px;border:0;background:none;color:rgba(255,255,255,.85);font-size:11px;font-weight:600}
+.rc i{width:50px;height:50px;border-radius:17px;background:rgba(255,255,255,.1);display:grid;place-items:center;transition:background-color .2s,color .2s}
+.rc.tog[aria-pressed="false"] i{background:#fff;color:var(--deep)}
+.rc.hand[aria-pressed="true"] i{background:#F7C27C;color:var(--deep)}
+.rc.leave i{background:#D8354F;color:#fff}
+
+/* toast */
+.toast{position:absolute;left:16px;right:16px;bottom:98px;z-index:20;background:rgba(29,20,24,.95);color:#fff;border-radius:18px;padding:12px 15px;font-size:13.5px;line-height:1.4;font-weight:550;box-shadow:0 16px 36px -12px rgba(0,0,0,.55);opacity:0;transform:translateY(10px) scale(.98);transition:opacity .25s var(--ease),transform .3s var(--ease);pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.app.in-room .toast{bottom:120px;background:rgba(255,255,255,.96);color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* ================= App-Modus (Handy / Home-Bildschirm) ================= */
+.rolepill{display:none}
+body.appmode{background:var(--bg,#F4F1F1);overflow:hidden}
+body.appmode .topline,body.appmode .intro,body.appmode .concept{display:none!important}
+body.appmode .page{display:block;padding:0;max-width:none}
+body.appmode .stage{position:static;max-width:none;width:100%}
+body.appmode .phone{height:100dvh;min-height:0;border-radius:0;padding:0;box-shadow:none;background:transparent}
+body.appmode .app{border-radius:0}
+body.appmode .sbar{padding:env(safe-area-inset-top,0px) 0 0;min-height:0}
+body.appmode .sbar > *{display:none}
+body.appmode .tabbar{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+body.appmode .rolepill{display:flex;position:fixed;z-index:30;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);gap:2px;padding:3px;border-radius:14px;background:rgba(43,15,30,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+body.appmode .rolepill button{all:unset;cursor:pointer;font:600 12px/1 Figtree,system-ui,sans-serif;color:rgba(255,241,246,.72);padding:7px 10px;border-radius:11px}
+body.appmode .rolepill button[aria-pressed="true"]{background:#FF9EC2;color:#2B0F1E}
+body.appmode .scroll{padding-top:40px}
+</style>
+</head>
+<body>
+<div class="rolepill" role="group" aria-label="Ansicht wählen"><button type="button" class="rp" aria-pressed="true" data-rp="mama">Mama</button><button type="button" class="rp" aria-pressed="false" data-rp="susann">Susann</button></div>
+<div class="shell">
+  <div class="topline"><span><b>HebammenZentrum Nürnberg</b> · Rückbildungs-App</span><span>Prototyp v2</span></div>
+
+  <div class="page">
+    <header class="intro">
+      <h1 class="wordmark">Rübi</h1>
+      <p class="pitch">Rückbildung mit Susann in einer App. <b>Training für zu Hause</b>, Woche für Woche angeleitet, und <b>Live-Kurse mit eingebautem Plan&nbsp;B</b>. Kein zweites Tool mehr.</p>
+      <div class="role" role="group" aria-label="Ansicht wählen">
+        <button type="button" aria-pressed="true" data-role="mama">Ansicht Mama</button>
+        <button type="button" aria-pressed="false" data-role="susann">Ansicht Susann</button>
+      </div>
+      <nav class="jump" aria-label="Bildschirme im Prototyp">
+        <div class="jgroup">
+          <h2>Für die Mamas</h2>
+          <div class="chips">
+            <button type="button" class="chip" data-go="mama/heute">Startseite</button>
+            <button type="button" class="chip" data-go="mama/player">Training</button>
+            <button type="button" class="chip" data-go="mama/programm">Programm</button>
+            <button type="button" class="chip" data-go="mama/live">Kurstermine</button>
+            <button type="button" class="chip" data-go="mama/check">Technik-Check</button>
+            <button type="button" class="chip hot" data-go="mama/room">Live-Kurs mit Ausfall-Demo</button>
+            <button type="button" class="chip" data-go="mama/ich">Fortschritt</button>
+          </div>
+        </div>
+        <div class="jgroup">
+          <h2>Für Susann</h2>
+          <div class="chips">
+            <button type="button" class="chip" data-go="susann/cockpit">Kurs-Cockpit</button>
+            <button type="button" class="chip" data-go="susann/anwesenheit">Anwesenheitsliste</button>
+            <button type="button" class="chip" data-go="susann/uebungen">Übungsbibliothek</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="stage">
+      <div class="phone">
+        <div class="app" id="app">
+          <div class="sbar" aria-hidden="true">
+            <span>9:41</span><span class="island"></span>
+            <svg width="66" height="12" viewBox="0 0 66 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><path d="M24 4.6a9 9 0 0 1 12 0M26.6 7.3a5 5 0 0 1 6.8 0" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="30" cy="10" r="1.4"/><rect x="41.5" y="1.5" width="20" height="9" rx="2.8" stroke="currentColor" stroke-width="1" fill="none" opacity=".45"/><rect x="43.5" y="3.5" width="14" height="5" rx="1.4"/><rect x="62.6" y="4.5" width="1.6" height="3" rx=".8" opacity=".45"/></svg>
+          </div>
+
+          <div class="scroll" id="scroll">
+
+            <!-- ================= MAMA · HEUTE ================= -->
+            <section class="view" id="v-heute">
+              <header class="top">
+                <div><p class="date">Dienstag, 29. September</p><h2 class="display">Hallo Lena</h2></div>
+                <button type="button" class="me-btn" data-view-go="ich" aria-label="Mein Bereich öffnen">LM</button>
+              </header>
+
+              <div class="weeks">
+                <div class="weeks-head"><b>Woche 9</b><span>nach der Geburt · Phase Rückbildung</span></div>
+                <div class="wgrid" id="wgrid" aria-hidden="true"></div>
+              </div>
+
+              <article class="hero" data-open="player" role="button" tabindex="0" aria-label="Training starten: Beckenboden und Atmung, 12 Minuten">
+                <img src="img/matte.jpg" alt="">
+                <span class="tag">Heute · Einheit 3 von 6</span>
+                <div class="hero-foot">
+                  <div><h3>Beckenboden &amp; Atmung</h3><p>12 Min · 6 Übungen · ohne Geräte</p></div>
+                  <span class="play-lg" aria-hidden="true" data-ic="play-f" data-s="24"></span>
+                </div>
+              </article>
+
+              <article class="livebox">
+                <div class="lb-top">
+                  <img class="face" src="img/susann-face.jpg" alt="Susann Rückert">
+                  <div><p class="lb-t"><span class="pulse"></span>Live mit Susann</p><p class="lb-m">Do, 1. Oktober · 19:30 · Termin 4 von 8</p></div>
+                  <div class="lb-count"><b>2</b><span>Tage</span></div>
+                </div>
+                <div class="lb-actions">
+                  <button type="button" class="btn rose" data-open="check">Zum Kursraum</button>
+                  <button type="button" class="btn glass" data-toast="Erinnerung ist an: Do um 19:15 kommt eine Nachricht aufs Handy." aria-label="Erinnerung einstellen" data-ic="bell-simple" data-s="20"></button>
+                </div>
+              </article>
+
+              <div class="sec-h"><h3>Kurz &amp; gut</h3><span class="muted">wenn wenig Zeit ist</span></div>
+              <div class="hscroll">
+                <button type="button" class="mini" data-toast="5 Minuten im Liegen, ohne Matte. Klappt auch neben dem schlafenden Baby."><span class="ph"><img src="img/baby.jpg" alt=""></span><span><b>Baby schläft</b><small>5 Min · im Liegen</small></span></button>
+                <button type="button" class="mini" data-toast="8 Minuten gegen Verspannungen vom Stillen und Tragen."><span class="ph"><img src="img/zubehoer.jpg" alt=""></span><span><b>Rücken entlasten</b><small>8 Min · Nacken &amp; Schultern</small></span></button>
+                <button type="button" class="mini" data-toast="Nach Kaiserschnitt passt Rübi den Plan an: sanfter Einstieg, Bauchübungen später."><span class="ph" data-ic="flower-lotus" data-s="40"></span><span><b>Nach Kaiserschnitt</b><small>angepasster Plan</small></span></button>
+              </div>
+
+              <div class="sec-h"><h3>Diese Woche</h3><span class="muted">1 von 3 Einheiten</span></div>
+              <div class="days" aria-label="Trainingstage diese Woche">
+                <div class="day done">Mo<i data-ic="check-b" data-s="14"></i></div>
+                <div class="day today">Di<i></i></div>
+                <div class="day">Mi<i></i></div>
+                <div class="day">Do<i></i></div>
+                <div class="day">Fr<i></i></div>
+                <div class="day">Sa<i></i></div>
+                <div class="day">So<i></i></div>
+              </div>
+
+              <figure class="tip">
+                <img src="img/susann-face.jpg" alt="">
+                <blockquote>Spann deinen Beckenboden kurz an, bevor du dein Baby hochhebst. So trainierst du ganz nebenbei im Alltag.</blockquote>
+                <figcaption>Susann · Tipp der Woche</figcaption>
+              </figure>
+            </section>
+
+            <!-- ================= MAMA · PROGRAMM ================= -->
+            <section class="view" id="v-programm" hidden>
+              <header class="top"><div><p class="date">Woche 9 · Phase 2 von 3</p><h2 class="display">Dein Programm</h2></div></header>
+              <div class="seg3" role="tablist" aria-label="Phase wählen" id="phase-tabs">
+                <button type="button" role="tab" aria-selected="false" data-phase="0">Wochenbett</button>
+                <button type="button" role="tab" aria-selected="true" data-phase="1">Rückbildung</button>
+                <button type="button" role="tab" aria-selected="false" data-phase="2">Aufbau</button>
+              </div>
+              <p class="note" id="phase-note"></p>
+              <ol class="ulist" id="ulist"></ol>
+              <p class="fine">Jede Einheit gibt es auch als 5-Minuten-Version.</p>
+            </section>
+
+            <!-- ================= MAMA · LIVE ================= -->
+            <section class="view" id="v-live" hidden>
+              <header class="top"><div><p class="date">Rückbildung · Donnerstagabend</p><h2 class="display">Live-Kurs</h2></div></header>
+              <article class="nextlive">
+                <img src="img/susann.jpg" alt="Susann Rückert in der Praxis">
+                <span class="nl-when"><i></i>in 2 Tagen</span>
+                <div class="nl-body">
+                  <h3>Donnerstag, 1. Oktober</h3>
+                  <p>19:30–20:45 · Termin 4 von 8 · mit Susann</p>
+                  <button type="button" class="btn rose full" data-open="check" data-ic="broadcast-f" data-s="20">Kursraum öffnen</button>
+                </div>
+              </article>
+              <div class="sec-h"><h3>Deine 8 Termine</h3><span class="muted">2 besucht</span></div>
+              <ol class="track" id="track"></ol>
+              <button type="button" class="catchup" data-open="player">
+                <span class="ci" data-ic="warning-circle" data-s="22"></span>
+                <span><b>Termin 3 verpasst</b><small>Die Übungen vom 24.9. kannst du nachholen</small></span>
+                <span data-ic="caret-right-b" data-s="18"></span>
+              </button>
+              <div class="sec-h"><h3>Bald auch hier</h3></div>
+              <ul class="glist">
+                <li class="gl"><span>Geburtsvorbereitung online</span><span class="soft">geplant</span></li>
+                <li class="gl"><span>Stillberatung in der Gruppe</span><span class="soft">geplant</span></li>
+              </ul>
+            </section>
+
+            <!-- ================= MAMA · ICH ================= -->
+            <section class="view" id="v-ich" hidden>
+              <header class="profile">
+                <span class="avatar-lg">LM</span>
+                <div><h2 class="display">Lena M.</h2><p class="date">Baby geboren am 3. August</p></div>
+              </header>
+              <div class="sec-h"><h3>Deine Minuten</h3><span class="muted">162 insgesamt</span></div>
+              <div class="chart">
+                <div class="bars" id="bars"></div>
+                <div class="bx" id="bx"></div>
+              </div>
+              <p class="fine">14 Einheiten · 2 von 8 Live-Terminen · Woche 9 läuft noch</p>
+
+              <div class="sec-h"><h3>Beckenboden-Check</h3><span class="muted">1 Minute pro Woche</span></div>
+              <div class="checks-q">
+                <div class="q"><p>Verlierst du Urin beim Husten, Niesen oder Lachen?</p><div class="seg"><button type="button" aria-pressed="true">nie</button><button type="button" aria-pressed="false">manchmal</button><button type="button" aria-pressed="false">oft</button></div></div>
+                <div class="q"><p>Spürst du ein Druckgefühl nach unten?</p><div class="seg"><button type="button" aria-pressed="false">nie</button><button type="button" aria-pressed="true">manchmal</button><button type="button" aria-pressed="false">oft</button></div></div>
+                <div class="q"><p>Hast du Schmerzen beim Training?</p><div class="seg"><button type="button" aria-pressed="true">nie</button><button type="button" aria-pressed="false">manchmal</button><button type="button" aria-pressed="false">oft</button></div></div>
+                <p class="q-res" id="q-res">Danke. Sprich das Druckgefühl beim nächsten Kurs kurz bei Susann an.</p>
+              </div>
+
+              <div class="sec-h"><h3>Einstellungen</h3></div>
+              <ul class="glist">
+                <li class="gl"><span>Erinnerungen</span><span class="val">Mo, Mi, Fr · 10:00</span></li>
+                <li class="gl"><span>Teilnahmebestätigung</span><span class="val">nach Kursende</span></li>
+                <li class="gl"><span>Meine Daten</span><span class="val">Server in Frankfurt</span></li>
+              </ul>
+            </section>
+
+            <!-- ================= SUSANN · COCKPIT ================= -->
+            <section class="view" id="v-cockpit" hidden>
+              <header class="top">
+                <div><p class="date">Donnerstag, 1. Oktober</p><h2 class="display">Kurs-Cockpit</h2></div>
+                <img class="me-img" src="img/susann-face.jpg" alt="Susann Rückert">
+              </header>
+              <article class="cp" id="ck-card">
+                <div class="cp-head">
+                  <div><h3>Rückbildung · Donnerstagabend</h3><p>Termin 4 von 8 · 19:30–20:45</p></div>
+                  <span class="soft" id="ck-state">bereit</span>
+                </div>
+                <div class="meter-row">
+                  <div class="meter"><i id="ck-meter"></i></div>
+                  <div class="meter-l"><span id="ck-count">0 von 10 im Raum</span><span id="ck-time"></span></div>
+                </div>
+                <button type="button" class="btn rose full" id="ck-start" data-ic="broadcast-f" data-s="20">Kurs starten</button>
+                <div class="cp-acts" id="ck-live-acts" hidden>
+                  <button type="button" class="btn dark" data-open="room">Kursraum öffnen</button>
+                  <button type="button" class="btn line" id="ck-end">Beenden</button>
+                </div>
+              </article>
+
+              <div class="sec-h"><h3>Videoräume</h3><span class="muted">beide zertifiziert</span></div>
+              <div class="glist">
+                <div class="room-row"><span class="room-ic" data-ic="video-camera" data-s="20"></span><span><b>Hauptraum</b><small>ak-Hebamme · Raum 1</small></span><span class="soft ok" id="rm-a"></span></div>
+                <div class="room-row"><span class="room-ic" data-ic="video-camera" data-s="20"></span><span><b>Ersatzraum</b><small>ak-Hebamme · Raum 2</small></span><span class="soft" id="rm-b"></span></div>
+                <div style="padding:2px 0 14px"><button type="button" class="btn line full" id="ck-switch"></button></div>
+              </div>
+
+              <div class="sec-h"><h3>Übung an alle</h3><span class="muted">erscheint auf jedem Handy</span></div>
+              <div class="pushchips" id="pushchips">
+                <button type="button" aria-pressed="false">Atem-Wahrnehmung</button>
+                <button type="button" aria-pressed="false">Beckenbrücke</button>
+                <button type="button" aria-pressed="true">Vierfüßlerstand</button>
+                <button type="button" aria-pressed="false">Seitlage: Muschel</button>
+              </div>
+
+              <div class="sec-h"><h3 id="ck-people-h">Teilnehmerinnen</h3><span class="muted">Anwesenheit automatisch</span></div>
+              <ul class="glist" id="people"></ul>
+            </section>
+
+            <!-- ================= SUSANN · ANWESENHEIT ================= -->
+            <section class="view" id="v-anwesenheit" hidden>
+              <header class="top"><div><p class="date">Rückbildung · Donnerstagabend</p><h2 class="display">Anwesenheit</h2></div></header>
+              <div class="tablewrap"><table class="att" id="att"></table></div>
+              <div class="legend"><span><b style="color:var(--rose)">✓</b> im Kursraum</span><span><b style="color:var(--warn)">–</b> gefehlt</span><span><b>·</b> offen</span></div>
+              <div style="margin-top:18px"><button type="button" class="btn rose full" data-ic="download-simple" data-s="20" data-toast="Export als PDF und CSV kommt in der echten App. Im Prototyp noch ohne Funktion.">Für die Abrechnung exportieren</button></div>
+              <p class="fine">Die gleiche Liste, die du für die Abrechnung brauchst. Nichts mehr abtippen.</p>
+            </section>
+
+            <!-- ================= SUSANN · ÜBUNGEN ================= -->
+            <section class="view" id="v-uebungen" hidden>
+              <header class="top"><div><p class="date" id="lib-sum"></p><h2 class="display">Übungen</h2></div></header>
+              <div class="libbar" id="libbar"></div>
+              <div class="libleg" id="libleg"></div>
+              <div class="filters" id="filters">
+                <button type="button" aria-pressed="true" data-f="alle">Alle</button>
+                <button type="button" aria-pressed="false" data-f="Wochenbett">Wochenbett</button>
+                <button type="button" aria-pressed="false" data-f="Rückbildung">Rückbildung</button>
+                <button type="button" aria-pressed="false" data-f="Aufbau">Aufbau</button>
+              </div>
+              <ul class="glist" id="lib" style="margin-top:12px"></ul>
+              <div style="margin-top:14px"><button type="button" class="btn line full" data-ic="plus-b" data-s="18" data-toast="Neue Übung: Video hochladen, Phase wählen, Ansage einsprechen. Kommt in der echten App.">Übung hinzufügen</button></div>
+            </section>
+
+          </div>
+
+          <nav class="tabbar" id="tabbar" aria-label="App-Navigation"></nav>
+
+          <!-- ================= OVERLAY · PLAYER ================= -->
+          <div class="overlay dark-ov" id="o-player" hidden>
+            <div class="ov-top">
+              <button type="button" class="icbtn" data-close aria-label="Training schließen" data-ic="x-b" data-s="18"></button>
+              <div class="ov-title"><b>Beckenboden &amp; Atmung</b><small id="pl-count">Übung 3 von 6</small></div>
+              <span class="pl-time" id="pl-time">08:00</span>
+            </div>
+            <div class="segs" id="pl-segs"></div>
+            <div class="ov-scroll">
+              <div class="pl-stage">
+                <span class="pl-chip" id="pl-chip">Animation · später Video oder 3D</span>
+                <svg id="pl-svg" viewBox="0 0 280 180" role="img" aria-label="Animierte Übung"></svg>
+                <div class="ph-box" id="pl-ph" hidden><span data-ic="film-strip" data-s="34"></span><span>Hier läuft später Susanns Video oder die 3D-Animation zu dieser Übung.</span></div>
+              </div>
+              <div class="pl-row">
+                <div><h3 id="pl-name">Beckenbrücke</h3><p id="pl-meta">8 Wiederholungen</p></div>
+                <div class="reps" id="pl-reps"><b id="pl-rep">0</b><span id="pl-of">/8</span></div>
+              </div>
+              <div class="breath"><span id="pl-breath">Bereit</span><div class="btrack"><i id="pl-bar"></i></div></div>
+              <p class="cue" id="pl-cue">Leg dich auf den Rücken, die Füße hüftbreit aufgestellt. Dann tipp auf Start.</p>
+              <div id="pl-done" class="done-chip" hidden><span data-ic="check-b" data-s="16"></span>Geschafft. Weiter zur nächsten Übung.</div>
+              <div class="controls">
+                <button type="button" class="icbtn" id="pl-prev" aria-label="Vorherige Übung" data-ic="caret-left-b" data-s="20"></button>
+                <button type="button" class="playbtn" id="pl-play" aria-label="Start"></button>
+                <button type="button" class="icbtn" id="pl-next" aria-label="Nächste Übung" data-ic="caret-right-b" data-s="20"></button>
+              </div>
+              <button type="button" class="linkbtn" id="pl-easy">Zieht es im Rücken? Leichtere Variante</button>
+              <p class="voice"><span data-ic="speaker-high" data-s="17"></span>Anleitung mit Susanns Stimme (Aufnahme folgt)</p>
+              <p class="safety">Schmerzen, Blutung oder Druck nach unten? Übung beenden und Susann fragen.</p>
+            </div>
+          </div>
+
+          <!-- ================= OVERLAY · TECHNIK-CHECK ================= -->
+          <div class="overlay" id="o-check" hidden>
+            <div class="ov-top">
+              <button type="button" class="icbtn" data-close aria-label="Zurück" data-ic="caret-left-b" data-s="18"></button>
+              <div class="ov-title"><b>Technik-Check</b><small>Rückbildung · Termin 4 von 8</small></div>
+              <span></span>
+            </div>
+            <div class="ov-scroll">
+              <div class="selfview"><span class="ini">L</span><small>Deine Kamera-Vorschau (simuliert)</small></div>
+              <div class="glist" style="margin-top:14px" id="checks">
+                <div class="chk" data-k="cam"><span class="s"></span><span>Kamera</span><span class="r">wartet</span></div>
+                <div class="chk" data-k="mic"><span class="s"></span><span>Mikrofon</span><span class="r">wartet</span></div>
+                <div class="chk" data-k="net"><span class="s"></span><span>Internet</span><span class="r">wartet</span></div>
+                <div class="chk" data-k="room"><span class="s"></span><span>Kursraum</span><span class="r">wartet</span></div>
+              </div>
+              <div class="glist" style="margin-top:10px">
+                <div class="tgl"><span>Mit Kamera beitreten</span><button type="button" class="sw" role="switch" aria-checked="true" aria-label="Mit Kamera beitreten" id="sw-cam"></button></div>
+                <div class="tgl"><span>Mikrofon beim Start stumm</span><button type="button" class="sw" role="switch" aria-checked="true" aria-label="Mikrofon beim Start stumm" id="sw-mic"></button></div>
+              </div>
+              <div style="margin-top:14px"><button type="button" class="btn rose full" id="join" disabled>Jetzt beitreten</button></div>
+              <p class="hint">Läuft direkt in der App. Kein Link, kein Download.</p>
+            </div>
+          </div>
+
+          <!-- ================= OVERLAY · LIVE-RAUM ================= -->
+          <div class="overlay dark-ov" id="o-room" hidden>
+            <div class="ov-top">
+              <button type="button" class="icbtn" data-close aria-label="Raum minimieren" data-ic="caret-left-b" data-s="18"></button>
+              <div class="ov-title"><b>Rückbildung mit Susann</b><small id="room-label">Hauptraum · Videodienst A</small></div>
+              <span class="rmeta" id="rtime">00:12:34</span>
+            </div>
+            <div class="rstatus">
+              <span class="rs" id="rs"><span class="dot"></span><span id="rs-t">Live · Verbindung stabil</span></span>
+              <span class="rmeta">9 im Raum</span>
+            </div>
+            <div class="rbody">
+              <div class="main-tile" id="main-tile">
+                <img src="img/susann.jpg" alt="Susann Rückert im Kursraum">
+                <div class="push"><span class="pi" data-ic="flower-lotus" data-s="20"></span><span><small>Susann zeigt gerade</small><b id="push-t">Vierfüßlerstand · 8 Wiederholungen</b></span></div>
+                <span class="tname">Susann Rückert · Hebamme</span>
+              </div>
+              <div class="demo-row"><button type="button" class="demo-btn" id="outage">Prototyp: Ausfall des Hauptraums simulieren</button></div>
+              <div class="ptiles" id="ptiles"></div>
+            </div>
+            <div class="rctrl">
+              <button type="button" class="rc tog" id="rc-mic" aria-pressed="false"><i></i>Mikro</button>
+              <button type="button" class="rc tog" id="rc-cam" aria-pressed="true"><i></i>Kamera</button>
+              <button type="button" class="rc hand" id="rc-hand" aria-pressed="false"><i data-ic="hand-palm" data-s="22"></i>Melden</button>
+              <button type="button" class="rc" id="rc-chat"><i data-ic="chat-circle" data-s="22"></i>Chat</button>
+              <button type="button" class="rc leave" id="rc-leave"><i data-ic="phone-disconnect-f" data-s="22"></i>Verlassen</button>
+            </div>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </main>
+
+    <section class="concept" aria-label="Konzept in Kürze">
+      <div class="cblock">
+        <h2>Was die App kann</h2>
+        <ul>
+          <li><b>Trainingsplan nach Woche</b> seit der Geburt: kurze Einheiten von 5 bis 20 Minuten, angeleitet mit Susanns Stimme.</li>
+          <li><b>Live-Kurs mit einem Tipp</b>: kein Link suchen, keine extra App, vorher ein Technik-Check.</li>
+          <li><b>Susann sieht die Anwesenheit</b> automatisch und schickt die aktuelle Übung an alle Handys.</li>
+          <li><b>Termin verpasst?</b> Die Übungen stehen im Programm zum Nachholen.</li>
+        </ul>
+      </div>
+      <div class="cblock">
+        <h2>Plan B ist eingebaut</h2>
+        <p>Heute heißt ein Ausfall: zweites Tool, neuer Link, Nachrichten an alle. In Rübi gibt es zu jedem Kurs einen <b>Ersatzraum</b>. Fällt der Hauptraum aus, holt die App alle Teilnehmerinnen automatisch dorthin.</p>
+        <p>Damit Susann den Kurs weiter über die Krankenkasse abrechnen kann, laufen <b>beide Räume über den zertifizierten Videodienst ak-Hebamme</b>. Das verlangt der Hebammenhilfevertrag. Ein Anbieter, keine Zusatzkosten für den Ersatzraum. Rübi ist die App drumherum.</p>
+      </div>
+      <div class="cblock">
+        <h2>Laufende Kosten</h2>
+        <table class="costs">
+          <tr><td>App, Login, Datenbank (Server in Frankfurt)</td><td>0–25 €</td></tr>
+          <tr><td>Trainingsvideos abspielen</td><td>1–5 €</td></tr>
+          <tr><td>App Store</td><td>0 € (Web-App)</td></tr>
+          <tr><td>Live-Video: ak-Hebamme Advanced (zertifiziert, 3 Nutzerinnen)</td><td>49 €</td></tr>
+          <tr class="sum"><td>Gesamt</td><td>ca. 50–80 € / Monat</td></tr>
+          <tr><td>Zum Vergleich: 1 Live-Stunde mit 5 Frauen bringt</td><td>57 €</td></tr>
+        </table>
+      </div>
+      <div class="cblock">
+        <h2>Was wir von Susann brauchen</h2>
+        <ol>
+          <li>Welche zwei Tools nutzt du, und was genau fällt aus?</li>
+          <li>Wie viele Kurse und Teilnehmerinnen hast du pro Woche?</li>
+          <li>Übungsvideos: selbst vor die Kamera, Avatar oder beides?</li>
+          <li>Welche Nachweise brauchst du für die Abrechnung der Videokurse?</li>
+          <li>Soll Rübi auch nach Kursende weiterlaufen, zum Beispiel als Abo?</li>
+        </ol>
+      </div>
+      <p class="foot">Prototyp: Teilnehmerinnen, Termine und Zahlen sind Beispiele. Kamera, Ton und Ausfall sind simuliert. Das ausführliche Konzept liegt im Repo unter <code>rueckbildungs-app/KONZEPT.md</code>.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  /* ---------- Icons (Phosphor, MIT) ---------- */
+  const ICON = {"house":"<path d=\"M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z\"/>","calendar-dots":"<path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z\"/>","broadcast":"<path d=\"M128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152Zm73.71,7.14a80,80,0,0,1-14.08,22.2,8,8,0,0,1-11.92-10.67,63.95,63.95,0,0,0,0-85.33,8,8,0,1,1,11.92-10.67,80.08,80.08,0,0,1,14.08,84.47ZM69,103.09a64,64,0,0,0,11.26,67.58,8,8,0,0,1-11.92,10.67,79.93,79.93,0,0,1,0-106.67A8,8,0,1,1,80.29,85.34,63.77,63.77,0,0,0,69,103.09ZM248,128a119.58,119.58,0,0,1-34.29,84,8,8,0,1,1-11.42-11.2,103.9,103.9,0,0,0,0-145.56A8,8,0,1,1,213.71,44,119.58,119.58,0,0,1,248,128ZM53.71,200.78A8,8,0,1,1,42.29,212a119.87,119.87,0,0,1,0-168,8,8,0,1,1,11.42,11.2,103.9,103.9,0,0,0,0,145.56Z\"/>","user-circle":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z\"/>","presentation-chart":"<path d=\"M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z\"/>","user-check":"<path d=\"M144,157.68a68,68,0,1,0-71.9,0c-20.65,6.76-39.23,19.39-54.17,37.17a8,8,0,0,0,12.25,10.3C50.25,181.19,77.91,168,108,168s57.75,13.19,77.87,37.15a8,8,0,0,0,12.25-10.3C183.18,177.07,164.6,164.44,144,157.68ZM56,100a52,52,0,1,1,52,52A52.06,52.06,0,0,1,56,100Zm197.66,33.66-32,32a8,8,0,0,1-11.32,0l-16-16a8,8,0,0,1,11.32-11.32L216,148.69l26.34-26.35a8,8,0,0,1,11.32,11.32Z\"/>","film-strip":"<path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,88h80v80H40Zm96-16V56h32V72Zm-16,0H88V56h32Zm0,112v16H88V184Zm16,0h32v16H136Zm0-16V88h80v80Zm80-96H184V56h32ZM72,56V72H40V56ZM40,184H72v16H40Zm176,16H184V184h32v16Z\"/>","microphone":"<path d=\"M128,176a48.05,48.05,0,0,0,48-48V64a48,48,0,0,0-96,0v64A48.05,48.05,0,0,0,128,176ZM96,64a32,32,0,0,1,64,0v64a32,32,0,0,1-64,0Zm40,143.6V240a8,8,0,0,1-16,0V207.6A80.11,80.11,0,0,1,48,128a8,8,0,0,1,16,0,64,64,0,0,0,128,0,8,8,0,0,1,16,0A80.11,80.11,0,0,1,136,207.6Z\"/>","microphone-slash":"<path d=\"M213.92,218.62l-160-176A8,8,0,0,0,42.08,53.38L80,95.09V128a48,48,0,0,0,69.11,43.12l11.1,12.2A63.41,63.41,0,0,1,128,192a64.07,64.07,0,0,1-64-64,8,8,0,0,0-16,0,80.11,80.11,0,0,0,72,79.6V240a8,8,0,0,0,16,0V207.59a78.83,78.83,0,0,0,35.16-12.22l30.92,34a8,8,0,1,0,11.84-10.76ZM128,160a32,32,0,0,1-32-32V112.69l41.66,45.82A32,32,0,0,1,128,160Zm57.52-3.91A63.32,63.32,0,0,0,192,128a8,8,0,0,1,16,0,79.16,79.16,0,0,1-8.11,35.12,8,8,0,0,1-7.19,4.49,7.88,7.88,0,0,1-3.51-.82A8,8,0,0,1,185.52,156.09ZM84,44.87A48,48,0,0,1,176,64v64a49.19,49.19,0,0,1-.26,5,8,8,0,0,1-8,7.17,8.13,8.13,0,0,1-.84,0,8,8,0,0,1-7.12-8.79c.11-1.1.17-2.24.17-3.36V64A32,32,0,0,0,98.64,51.25,8,8,0,1,1,84,44.87Z\"/>","video-camera":"<path d=\"M251.77,73a8,8,0,0,0-8.21.39L208,97.05V72a16,16,0,0,0-16-16H32A16,16,0,0,0,16,72V184a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V159l35.56,23.71A8,8,0,0,0,248,184a8,8,0,0,0,8-8V80A8,8,0,0,0,251.77,73ZM192,184H32V72H192V184Zm48-22.95-32-21.33V116.28L240,95Z\"/>","video-camera-slash":"<path d=\"M251.77,73a8,8,0,0,0-8.21.39L208,97.05V72a16,16,0,0,0-16-16H113.06a8,8,0,0,0,0,16H192v87.63a8,8,0,0,0,16,0V159l35.56,23.71A8,8,0,0,0,248,184a8,8,0,0,0,8-8V80A8,8,0,0,0,251.77,73ZM240,161.05l-32-21.33V116.28L240,95ZM53.92,34.62A8,8,0,1,0,42.08,45.38L51.73,56H32A16,16,0,0,0,16,72V184a16,16,0,0,0,16,16H182.64l19.44,21.38a8,8,0,1,0,11.84-10.76ZM32,184V72H66.28L168.1,184Z\"/>","hand-palm":"<path d=\"M188,88a27.75,27.75,0,0,0-12,2.71V60a28,28,0,0,0-41.36-24.6A28,28,0,0,0,80,44v6.71A27.75,27.75,0,0,0,68,48,28,28,0,0,0,40,76v76a88,88,0,0,0,176,0V116A28,28,0,0,0,188,88Zm12,64a72,72,0,0,1-144,0V76a12,12,0,0,1,24,0v44a8,8,0,0,0,16,0V44a12,12,0,0,1,24,0v68a8,8,0,0,0,16,0V60a12,12,0,0,1,24,0v68.67A48.08,48.08,0,0,0,120,176a8,8,0,0,0,16,0,32,32,0,0,1,32-32,8,8,0,0,0,8-8V116a12,12,0,0,1,24,0Z\"/>","chat-circle":"<path d=\"M128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/>","speaker-high":"<path d=\"M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM32,96H72v64H32ZM144,207.64,88,164.09V91.91l56-43.55Zm54-106.08a40,40,0,0,1,0,52.88,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.72,8,8,0,0,1,12-10.58ZM248,128a79.9,79.9,0,0,1-20.37,53.34,8,8,0,0,1-11.92-10.67,64,64,0,0,0,0-85.33,8,8,0,1,1,11.92-10.67A79.83,79.83,0,0,1,248,128Z\"/>","shield-check":"<path d=\"M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z\"/>","download-simple":"<path d=\"M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z\"/>","plus":"<path d=\"M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z\"/>","bell-simple":"<path d=\"M168,224a8,8,0,0,1-8,8H96a8,8,0,1,1,0-16h64A8,8,0,0,1,168,224Zm53.85-32A15.8,15.8,0,0,1,208,200H48a16,16,0,0,1-13.8-24.06C39.75,166.38,48,139.34,48,104a80,80,0,1,1,160,0c0,35.33,8.26,62.38,13.81,71.94A15.89,15.89,0,0,1,221.84,192ZM208,184c-7.73-13.27-16-43.95-16-80a64,64,0,1,0-128,0c0,36.06-8.28,66.74-16,80Z\"/>","arrows-left-right":"<path d=\"M213.66,181.66l-32,32a8,8,0,0,1-11.32-11.32L188.69,184H48a8,8,0,0,1,0-16H188.69l-18.35-18.34a8,8,0,0,1,11.32-11.32l32,32A8,8,0,0,1,213.66,181.66Zm-139.32-64a8,8,0,0,0,11.32-11.32L67.31,88H208a8,8,0,0,0,0-16H67.31L85.66,53.66A8,8,0,0,0,74.34,42.34l-32,32a8,8,0,0,0,0,11.32Z\"/>","moon":"<path d=\"M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z\"/>","baby":"<path d=\"M92,140a12,12,0,1,1,12-12A12,12,0,0,1,92,140Zm72-24a12,12,0,1,0,12,12A12,12,0,0,0,164,116Zm-12.27,45.23a45,45,0,0,1-47.46,0,8,8,0,0,0-8.54,13.54,61,61,0,0,0,64.54,0,8,8,0,0,0-8.54-13.54ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88.11,88.11,0,0,0-84.09-87.91C120.32,56.38,120,71.88,120,72a8,8,0,0,0,16,0,8,8,0,0,1,16,0,24,24,0,0,1-48,0c0-.73.13-14.3,8.46-30.63A88,88,0,1,0,216,128Z\"/>","clock":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z\"/>","warning-circle":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z\"/>","timer":"<path d=\"M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216ZM173.66,90.34a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32-11.32l40-40A8,8,0,0,1,173.66,90.34ZM96,16a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,16Z\"/>","flower-lotus":"<path d=\"M245.83,121.63a15.53,15.53,0,0,0-9.52-7.33,73.51,73.51,0,0,0-22.17-2.22c4-19.85,1-35.55-2.06-44.86a16.15,16.15,0,0,0-18.79-10.88,85.53,85.53,0,0,0-28.55,12.12,94.58,94.58,0,0,0-27.11-33.25,16.05,16.05,0,0,0-19.26,0A94.48,94.48,0,0,0,91.26,68.46,85.53,85.53,0,0,0,62.71,56.34,16.15,16.15,0,0,0,43.92,67.22c-3,9.31-6,25-2.06,44.86a73.51,73.51,0,0,0-22.17,2.22,15.53,15.53,0,0,0-9.52,7.33,16,16,0,0,0-1.6,12.27c3.39,12.57,13.8,36.48,45.33,55.32S113.13,208,128.05,208s42.67,0,74-18.78c31.53-18.84,41.94-42.75,45.33-55.32A16,16,0,0,0,245.83,121.63ZM59.14,72.14a.2.2,0,0,1,.23-.15A70.43,70.43,0,0,1,85.18,83.66,118.65,118.65,0,0,0,80,119.17c0,18.74,3.77,34,9.11,46.28A123.59,123.59,0,0,1,69.57,140C51.55,108.62,55.3,84,59.14,72.14Zm3,103.35C35.47,159.57,26.82,140.05,24,129.7a59.82,59.82,0,0,1,22.5-1.17,129.08,129.08,0,0,0,9.15,19.41,142.28,142.28,0,0,0,34,39.56A114.92,114.92,0,0,1,62.1,175.49ZM128,190.4c-9.33-6.94-32-28.23-32-71.23C96,76.7,118.38,55.24,128,48c9.62,7.26,32,28.72,32,71.19C160,162.17,137.33,183.46,128,190.4ZM170.82,83.66A70.43,70.43,0,0,1,196.63,72a.2.2,0,0,1,.23.15C200.7,84,204.45,108.62,186.43,140a123.32,123.32,0,0,1-19.54,25.48c5.34-12.26,9.11-27.54,9.11-46.28A118.65,118.65,0,0,0,170.82,83.66ZM232,129.72c-2.77,10.25-11.4,29.81-38.09,45.77a114.92,114.92,0,0,1-27.55,12,142.28,142.28,0,0,0,34-39.56,129.08,129.08,0,0,0,9.15-19.41A59.69,59.69,0,0,1,232,129.71Z\"/>","wifi-high":"<path d=\"M140,204a12,12,0,1,1-12-12A12,12,0,0,1,140,204ZM237.08,87A172,172,0,0,0,18.92,87,8,8,0,0,0,29.08,99.37a156,156,0,0,1,197.84,0A8,8,0,0,0,237.08,87ZM205,122.77a124,124,0,0,0-153.94,0A8,8,0,0,0,61,135.31a108,108,0,0,1,134.06,0,8,8,0,0,0,11.24-1.3A8,8,0,0,0,205,122.77Zm-32.26,35.76a76.05,76.05,0,0,0-89.42,0,8,8,0,0,0,9.42,12.94,60,60,0,0,1,70.58,0,8,8,0,1,0,9.42-12.94Z\"/>","sparkle":"<path d=\"M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z\"/>","heart":"<path d=\"M178,40c-20.65,0-38.73,8.88-50,23.89C116.73,48.88,98.65,40,78,40a62.07,62.07,0,0,0-62,62c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,228.66,240,172,240,102A62.07,62.07,0,0,0,178,40ZM128,214.8C109.74,204.16,32,155.69,32,102A46.06,46.06,0,0,1,78,56c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,155.61,146.24,204.15,128,214.8Z\"/>","house-f":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>","calendar-dots-f":"<path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm44,0a12,12,0,1,1,12-12A12,12,0,0,1,128,184Zm0-40a12,12,0,1,1,12-12A12,12,0,0,1,128,144Zm44,40a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm0-40a12,12,0,1,1,12-12A12,12,0,0,1,172,144Zm36-64H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24Z\"/>","broadcast-f":"<path d=\"M168,128a40,40,0,1,1-40-40A40,40,0,0,1,168,128Zm40,0a79.74,79.74,0,0,0-20.37-53.33,8,8,0,1,0-11.92,10.67,64,64,0,0,1,0,85.33,8,8,0,0,0,11.92,10.67A79.79,79.79,0,0,0,208,128ZM80.29,85.34A8,8,0,1,0,68.37,74.67a79.94,79.94,0,0,0,0,106.67,8,8,0,0,0,11.92-10.67,63.95,63.95,0,0,1,0-85.33Zm158.28-4A119.48,119.48,0,0,0,213.71,44a8,8,0,1,0-11.42,11.2,103.9,103.9,0,0,1,0,145.56A8,8,0,1,0,213.71,212,120.12,120.12,0,0,0,238.57,81.29ZM32.17,168.48A103.9,103.9,0,0,1,53.71,55.22,8,8,0,1,0,42.29,44a119.87,119.87,0,0,0,0,168,8,8,0,1,0,11.42-11.2A103.61,103.61,0,0,1,32.17,168.48Z\"/>","user-circle-f":"<path d=\"M172,120a44,44,0,1,1-44-44A44.05,44.05,0,0,1,172,120Zm60,8A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88.09,88.09,0,0,0-91.47-87.93C77.43,41.89,39.87,81.12,40,128.25a87.65,87.65,0,0,0,22.24,58.16A79.71,79.71,0,0,1,84,165.1a4,4,0,0,1,4.83.32,59.83,59.83,0,0,0,78.28,0,4,4,0,0,1,4.83-.32,79.71,79.71,0,0,1,21.79,21.31A87.62,87.62,0,0,0,216,128Z\"/>","presentation-chart-f":"<path d=\"M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM104,144a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32,0a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32,0a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z\"/>","user-check-f":"<path d=\"M253.66,133.66l-32,32a8,8,0,0,1-11.32,0l-16-16a8,8,0,0,1,11.32-11.32L216,148.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM144,157.68a68,68,0,1,0-71.9,0c-20.65,6.76-39.23,19.39-54.17,37.17A8,8,0,0,0,24,208H192a8,8,0,0,0,6.13-13.15C183.18,177.07,164.6,164.44,144,157.68Z\"/>","film-strip-f":"<path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM184,56h32V72H184ZM72,200H40V184H72ZM72,72H40V56H72Zm48,128H88V184h32Zm0-128H88V56h32Zm48,128H136V184h32Zm0-128H136V56h32Zm48,128H184V184h32v16Z\"/>","play-f":"<path d=\"M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z\"/>","pause-f":"<path d=\"M216,48V208a16,16,0,0,1-16,16H160a16,16,0,0,1-16-16V48a16,16,0,0,1,16-16h40A16,16,0,0,1,216,48ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Z\"/>","phone-disconnect-f":"<path d=\"M236.28,161.84a16,16,0,0,1-18.38,5.06l-49-17.39-.29-.11a16,16,0,0,1-9.72-11.59l-6.21-29.75h0a76.52,76.52,0,0,0-49.68.11l-5.9,29.52a16,16,0,0,1-9.75,11.73l-.29.11-49,17.37A15.8,15.8,0,0,1,32.35,168a16,16,0,0,1-12.63-6.14c-17.23-22.22-15.3-51.71,4.69-71.71,56.15-56.17,151-56.17,207.18,0h0C251.58,110.13,253.51,139.62,236.28,161.84ZM216,192H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z\"/>","microphone-slash-f":"<path d=\"M213.38,229.92a8,8,0,0,1-11.3-.54l-30.92-34A78.83,78.83,0,0,1,136,207.59V240a8,8,0,0,1-16,0V207.6A80.11,80.11,0,0,1,48,128a8,8,0,0,1,16,0,64.07,64.07,0,0,0,64,64,63.41,63.41,0,0,0,32.21-8.68l-11.1-12.2A48,48,0,0,1,80,128V95.09L42.08,53.38A8,8,0,0,1,53.92,42.62l160,176A8,8,0,0,1,213.38,229.92Zm-24.19-63.13a7.88,7.88,0,0,0,3.51.82,8,8,0,0,0,7.19-4.49A79.16,79.16,0,0,0,208,128a8,8,0,0,0-16,0,63.32,63.32,0,0,1-6.48,28.09A8,8,0,0,0,189.19,166.79Zm-27.33-29.22A8,8,0,0,0,175.74,133a49.49,49.49,0,0,0,.26-5V64A48,48,0,0,0,84,44.87a8,8,0,0,0,1.41,8.57Z\"/>","video-camera-f":"<path d=\"M192,72V184a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V72A16,16,0,0,1,32,56H176A16,16,0,0,1,192,72Zm58,.25a8.23,8.23,0,0,0-6.63,1.22L209.78,95.86A4,4,0,0,0,208,99.19v57.62a4,4,0,0,0,1.78,3.33l33.78,22.52a8,8,0,0,0,8.58.19,8.33,8.33,0,0,0,3.86-7.17V80A8,8,0,0,0,250,72.25Z\"/>","hand-palm-f":"<path d=\"M216,104v48a88,88,0,0,1-176,0V64a16,16,0,0,1,32,0v56a8,8,0,0,0,16,0V32a16,16,0,0,1,32,0v80a8,8,0,0,0,16,0V48a16,16,0,0,1,32,0v80.67A48.08,48.08,0,0,0,128,176a8,8,0,0,0,16,0,32,32,0,0,1,32-32,8,8,0,0,0,8-8V104a16,16,0,0,1,32,0Z\"/>","check-b":"<path d=\"M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z\"/>","x-b":"<path d=\"M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z\"/>","caret-left-b":"<path d=\"M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z\"/>","caret-right-b":"<path d=\"M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z\"/>","arrow-right-b":"<path d=\"M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z\"/>","lock-simple-b":"<path d=\"M208,76H180V56A52,52,0,0,0,76,56V76H48A20,20,0,0,0,28,96V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V96A20,20,0,0,0,208,76ZM100,56a28,28,0,0,1,56,0V76H100ZM204,204H52V100H204Z\"/>","plus-b":"<path d=\"M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z\"/>"};
+  function ic(name, size){
+    size = size || 20;
+    return '<svg class="ic" width="'+size+'" height="'+size+'" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">'+(ICON[name] || '')+'</svg>';
+  }
+  function hydrate(root){
+    $$('[data-ic]', root).forEach(el => {
+      if (el.dataset.icDone) return;
+      el.insertAdjacentHTML('afterbegin', ic(el.dataset.ic, +el.dataset.s || 20));
+      el.dataset.icDone = '1';
+    });
+  }
+
+  /* ---------- Toast ---------- */
+  let toastTimer;
+  function toast(msg){
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3400);
+  }
+
+  /* ---------- Week band (Heute) ---------- */
+  (function(){
+    const groups = [[1,8,'Wochenbett'],[9,16,'Rückbildung'],[17,20,'Aufbau']];
+    $('#wgrid').innerHTML = groups.map(g => {
+      let bars = '';
+      for (let w = g[0]; w <= g[1]; w++) bars += '<i class="'+(w < 9 ? 'past' : w === 9 ? 'now' : '')+'"></i>';
+      return '<div><div class="wgroup">'+bars+'</div><p class="wlab'+(g[2] === 'Rückbildung' ? ' on' : '')+'">'+g[2]+'</p></div>';
+    }).join('');
+  })();
+
+  /* ---------- Line-art figures for the player ---------- */
+  const STROKE = '#FFD6E5', GLOW = '#FF4F8B';
+  function bridgePose(theta){
+    const S = {x:70, y:146}, F = {x:230, y:148}, L = 78, T = 72, SH = 57;
+    const H = {x:S.x + L*Math.cos(theta), y:S.y - L*Math.sin(theta)};
+    const dx = F.x - H.x, dy = F.y - H.y, d = Math.hypot(dx, dy);
+    const a = (T*T - SH*SH + d*d) / (2*d), h = Math.sqrt(Math.max(0, T*T - a*a));
+    const mx = H.x + a*dx/d, my = H.y + a*dy/d;
+    const k1 = {x:mx + h*dy/d, y:my - h*dx/d}, k2 = {x:mx - h*dy/d, y:my + h*dx/d};
+    return {S, H, K: k1.y < k2.y ? k1 : k2, F};
+  }
+  function bridgeMarkup(theta, glow){
+    const p = bridgePose(theta);
+    const cx = (p.S.x + p.H.x)/2, cy = (p.S.y + p.H.y)/2 - 5;
+    return '<rect x="22" y="150" width="240" height="7" rx="3.5" fill="#ffffff" fill-opacity="0.08"/>' +
+      '<circle cx="'+p.H.x.toFixed(1)+'" cy="'+p.H.y.toFixed(1)+'" r="'+(7+glow*12).toFixed(1)+'" fill="'+GLOW+'" fill-opacity="'+(glow*0.4).toFixed(2)+'"/>' +
+      '<g fill="none" stroke="'+STROKE+'" stroke-linecap="round" stroke-linejoin="round">' +
+        '<circle cx="46" cy="139" r="11" stroke-width="4.5"/>' +
+        '<path d="M57 143 L70 146" stroke-width="4.5"/>' +
+        '<path d="M74 148 L124 150" stroke-width="3.5" stroke-opacity=".8"/>' +
+        '<path d="M'+p.S.x+' '+p.S.y+' Q'+cx.toFixed(1)+' '+cy.toFixed(1)+' '+p.H.x.toFixed(1)+' '+p.H.y.toFixed(1)+'" stroke-width="6"/>' +
+        '<path d="M'+p.H.x.toFixed(1)+' '+p.H.y.toFixed(1)+' L'+p.K.x.toFixed(1)+' '+p.K.y.toFixed(1)+' L'+p.F.x+' '+p.F.y+' L246 150" stroke-width="5"/>' +
+      '</g>';
+  }
+  function breathMarkup(k){
+    const r = 30 + k*26;
+    return '<circle cx="140" cy="90" r="'+(r+16).toFixed(1)+'" fill="'+GLOW+'" fill-opacity="0.1"/>' +
+      '<circle cx="140" cy="90" r="'+r.toFixed(1)+'" fill="'+GLOW+'" fill-opacity="0.18" stroke="'+STROKE+'" stroke-width="3"/>' +
+      '<text x="140" y="96" text-anchor="middle" font-family="Bricolage Grotesque, Figtree, sans-serif" font-weight="700" font-size="17" fill="'+STROKE+'">'+(k > 0.5 ? 'weit' : 'weich')+'</text>';
+  }
+
+  /* ---------- Player ---------- */
+  const EX = [
+    {name:'Atem-Wahrnehmung', kind:'breath', target:6, unit:'Atemzüge',
+      cues:['Bauch und Flanken werden weit, der Beckenboden sinkt sanft.','Alles wird weich, der Beckenboden hebt sich leicht.']},
+    {name:'Beckenboden spüren', kind:'ph', text:'Setz dich aufrecht hin. Stell dir vor, du ziehst beim Ausatmen Scheide und After sanft nach innen und oben.'},
+    {name:'Beckenbrücke', kind:'bridge', target:8, unit:'Wiederholungen', max:0.47,
+      cues:['Beckenboden sanft nach innen-oben ziehen, Becken heben.','Becken Wirbel für Wirbel ablegen, alles loslassen.'],
+      easy:{name:'Becken kippen', max:0.12, cues:['Beckenboden anspannen, Becken leicht Richtung Nabel kippen.','Becken zurückrollen, Bauch weich lassen.']}},
+    {name:'Vierfüßlerstand', kind:'ph', text:'Hände unter den Schultern, Knie unter den Hüften. Beim Ausatmen den Bauchnabel sanft zur Wirbelsäule ziehen.'},
+    {name:'Seitlage: Muschel', kind:'ph', text:'Auf der Seite liegen, Knie gebeugt. Beim Ausatmen das obere Knie öffnen, die Füße bleiben zusammen.'},
+    {name:'Entspannung', kind:'ph', text:'Auf den Rücken legen, Augen schließen. Drei tiefe Atemzüge in den Bauch.'}
+  ];
+  const CYCLE = 8000;
+  const P = {i:2, playing:false, t:0, last:0, easy:false, remain:480, raf:0, done:false};
+  const svg = $('#pl-svg');
+
+  function segs(){
+    $('#pl-segs').innerHTML = EX.map((e, k) => '<i class="'+(k < P.i ? 'done' : k === P.i ? 'now' : '')+'"></i>').join('');
+    $('#pl-count').textContent = 'Übung ' + (P.i + 1) + ' von ' + EX.length;
+  }
+  function fmt(s){ s = Math.max(0, Math.round(s)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+  function ease(x){ return x < .5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2)/2; }
+  function setPlayIcon(){
+    const b = $('#pl-play');
+    b.innerHTML = ic(P.playing ? 'pause-f' : 'play-f', 30);
+    b.setAttribute('aria-label', P.playing ? 'Pause' : 'Start');
+  }
+  function loadEx(){
+    const e = EX[P.i];
+    P.t = 0; P.done = false;
+    $('#pl-done').hidden = true;
+    const isPh = e.kind === 'ph';
+    svg.hidden = isPh; $('#pl-ph').hidden = !isPh;
+    $('#pl-reps').hidden = isPh;
+    $('#pl-chip').textContent = isPh ? 'Video folgt' : 'Animation · später Video oder 3D';
+    $('#pl-easy').hidden = e.kind !== 'bridge';
+    $('#pl-easy').textContent = P.easy ? 'Zurück zur normalen Variante' : 'Zieht es im Rücken? Leichtere Variante';
+    $('#pl-name').textContent = e.name;
+    segs(); render();
+    if (isPh){
+      $('#pl-breath').textContent = 'Anleitung';
+      $('#pl-bar').style.width = '0%';
+      $('#pl-cue').textContent = e.text;
+      $('#pl-meta').textContent = 'ca. 1 Minute';
+    } else if (!P.playing){
+      $('#pl-breath').textContent = 'Bereit';
+      $('#pl-bar').style.width = '0%';
+      $('#pl-cue').textContent = e.kind === 'bridge'
+        ? 'Leg dich auf den Rücken, die Füße hüftbreit aufgestellt. Dann tipp auf Start.'
+        : 'Leg eine Hand auf den Bauch, eine auf die Flanke. Dann tipp auf Start.';
+    }
+  }
+  function render(){
+    const e = EX[P.i];
+    $('#pl-time').textContent = fmt(P.remain);
+    if (e.kind === 'ph') return;
+    const ph = (P.t % CYCLE) / CYCLE;
+    const count = Math.min(e.target, Math.floor((P.t + CYCLE/2) / CYCLE));
+    const v = (e.kind === 'bridge' && P.easy) ? e.easy : e;
+    let label, cue, bar;
+    if (e.kind === 'bridge'){
+      let lift;
+      if (ph < .25) lift = ease(ph/.25);
+      else if (ph < .5) lift = 1;
+      else if (ph < .75) lift = 1 - ease((ph - .5)/.25);
+      else lift = 0;
+      const glow = ph < .5 ? Math.min(1, ph/.12) : Math.max(0, 1 - (ph - .5)/.1);
+      svg.setAttribute('viewBox', '14 60 256 106');
+      svg.innerHTML = bridgeMarkup(lift * v.max, P.playing ? glow : 0);
+      const exhale = ph < .5;
+      label = exhale ? 'Ausatmen' : 'Einatmen';
+      cue = v.cues[exhale ? 0 : 1];
+      bar = exhale ? 100 - ph/.5*100 : (ph - .5)/.5*100;
+    } else {
+      const inhale = ph < .5;
+      const k = inhale ? ease(ph/.5) : 1 - ease((ph - .5)/.5);
+      svg.setAttribute('viewBox', '0 0 280 180');
+      svg.innerHTML = breathMarkup(k);
+      label = inhale ? 'Einatmen' : 'Ausatmen';
+      cue = v.cues[inhale ? 0 : 1];
+      bar = inhale ? ph/.5*100 : 100 - (ph - .5)/.5*100;
+    }
+    $('#pl-name').textContent = v.name || e.name;
+    $('#pl-meta').textContent = e.target + ' ' + e.unit;
+    $('#pl-rep').textContent = count;
+    $('#pl-of').textContent = '/' + e.target;
+    if (P.playing || P.t > 0){
+      $('#pl-breath').textContent = label;
+      $('#pl-cue').textContent = cue;
+      $('#pl-bar').style.width = bar.toFixed(1) + '%';
+    }
+    if (count >= e.target && ph >= .75 && !P.done){
+      P.done = true; P.playing = false; setPlayIcon();
+      $('#pl-done').hidden = false;
+    }
+  }
+  function frame(now){
+    if (!P.playing) return;
+    const dt = Math.min(100, now - P.last); P.last = now;
+    P.t += dt; P.remain -= dt/1000;
+    render();
+    P.raf = requestAnimationFrame(frame);
+  }
+  function play(on){
+    P.playing = on;
+    setPlayIcon();
+    if (on){ if (P.done){ P.t = 0; P.done = false; $('#pl-done').hidden = true; } P.last = performance.now(); P.raf = requestAnimationFrame(frame); }
+    else cancelAnimationFrame(P.raf);
+  }
+  $('#pl-play').addEventListener('click', () => {
+    if (EX[P.i].kind === 'ph'){ toast('Hier startet später das Video. Im Prototyp sind Übung 1 und 3 animiert.'); return; }
+    play(!P.playing);
+  });
+  $('#pl-prev').addEventListener('click', () => { play(false); P.i = (P.i + EX.length - 1) % EX.length; P.easy = false; loadEx(); });
+  $('#pl-next').addEventListener('click', () => { play(false); P.i = (P.i + 1) % EX.length; P.easy = false; loadEx(); });
+  $('#pl-easy').addEventListener('click', () => {
+    P.easy = !P.easy;
+    $('#pl-easy').textContent = P.easy ? 'Zurück zur normalen Variante' : 'Zieht es im Rücken? Leichtere Variante';
+    render();
+    toast(P.easy ? 'Leichtere Variante: nur das Becken kippen, der Po bleibt am Boden.' : 'Normale Variante: Beckenbrücke.');
+  });
+  setPlayIcon();
+
+  /* ---------- Programm ---------- */
+  const PHASES = [
+    {note:['ok','Abgeschlossen. Du kannst alle Einheiten jederzeit wiederholen.'], units:[
+      ['done','Atem-Wahrnehmung','8 Min · Atmung'],['done','Beckenboden spüren','10 Min · Wahrnehmung'],
+      ['done','Aufstehen über die Seite','6 Min · Alltag'],['done','Sanfte Beckenkippung','10 Min · Becken']]},
+    {note:['ok','Nachuntersuchung bestätigt. Die Rückbildung ist freigeschaltet.'], units:[
+      ['done','Beckenboden spüren','10 Min · Wahrnehmung'],['done','Atmung & tiefe Bauchmuskeln','12 Min · Atmung, Bauch'],
+      ['now','Beckenboden & Atmung','12 Min · heute dran'],['','Haltung im Alltag mit Baby','15 Min · Tragen, Stillen, Heben','15 Min'],
+      ['','Rücken & Po kräftigen','18 Min · mit leichter Variante','18 Min'],['locked','Beckenboden unter Belastung','15 Min · ab Woche 11']]},
+    {note:['lock','Wird ab Woche 16 freigeschaltet, wenn Susann ihr Okay gibt.'], units:[
+      ['locked','Kniebeuge mit Beckenboden','15 Min · ab Woche 16'],['locked','Ausfallschritt','15 Min · ab Woche 16'],
+      ['locked','Laufen vorbereiten','20 Min · ab Woche 18']]}
+  ];
+  function renderPhase(n){
+    const ph = PHASES[n];
+    $$('#phase-tabs button').forEach(b => b.setAttribute('aria-selected', String(+b.dataset.phase === n)));
+    const note = $('#phase-note');
+    note.className = 'note' + (ph.note[0] === 'lock' ? ' lock' : '');
+    note.innerHTML = ic(ph.note[0] === 'lock' ? 'lock-simple-b' : 'shield-check', 18) + '<span>' + ph.note[1] + '</span>';
+    $('#ulist').innerHTML = ph.units.map((u, k) => {
+      const st = u[0];
+      const no = st === 'done' ? ic('check-b', 16) : String(k + 1);
+      let right = '';
+      if (st === 'now') right = '<span class="u-st">'+ic('play-f', 14)+'</span>';
+      else if (st === 'locked') right = '<span class="u-st">'+ic('lock-simple-b', 16)+'</span>';
+      else if (st === '') right = '<span class="u-st">'+u[3]+'</span>';
+      return '<li class="u '+st+'"'+(st === 'now' ? ' data-open="player" role="button" tabindex="0"' : '')+'>' +
+        '<span class="u-no">'+no+'</span><span><b>'+u[1]+'</b><small>'+u[2]+'</small></span>'+right+'</li>';
+    }).join('');
+  }
+  $$('#phase-tabs button').forEach(b => b.addEventListener('click', () => renderPhase(+b.dataset.phase)));
+  renderPhase(1);
+
+  /* ---------- Live track ---------- */
+  (function(){
+    const d = ['10.9.','17.9.','24.9.','1.10.','8.10.','15.10.','22.10.','29.10.'];
+    const st = ['done','done','miss','next','','','',''];
+    $('#track').innerHTML = d.map((x, k) => '<li class="tk '+st[k]+'"><i>'+(st[k] === 'done' ? ic('check-b', 14) : st[k] === 'miss' ? ic('x-b', 12) : '')+'</i>'+x+'</li>').join('');
+  })();
+
+  /* ---------- Minutes chart ---------- */
+  (function(){
+    const mins = [6,10,14,18,20,22,24,26,22];
+    const max = Math.max.apply(null, mins);
+    $('#bars').innerHTML = mins.map((m, k) => {
+      const cur = k === mins.length - 1, top = m === max;
+      return '<div class="bar'+(cur ? ' cur' : '')+'" style="height:'+(m/max*100).toFixed(1)+'%">'+((cur || top) ? '<span>'+m+'</span>' : '')+'</div>';
+    }).join('');
+    $('#bx').innerHTML = mins.map((m, k) => '<span>W'+(k+1)+'</span>').join('');
+  })();
+
+  /* ---------- Tech check ---------- */
+  let checkTimers = [];
+  function runCheck(){
+    checkTimers.forEach(clearTimeout); checkTimers = [];
+    const res = {cam:'gefunden', mic:'<span class="lvl"><i></i><i></i><i></i><i></i></span>Pegel gut', net:'gut · 24 Mbit/s', room:(R.room === 'A' ? 'Hauptraum' : 'Ersatzraum') + ' bereit'};
+    $('#join').disabled = true;
+    $$('#checks .chk').forEach(li => { li.className = 'chk'; $('.s', li).innerHTML = ''; $('.r', li).textContent = 'wartet'; });
+    $$('#checks .chk').forEach((li, n) => {
+      checkTimers.push(setTimeout(() => { li.classList.add('wait'); $('.s', li).innerHTML = '<i></i>'; $('.r', li).textContent = 'wird geprüft'; }, n*650));
+      checkTimers.push(setTimeout(() => {
+        li.classList.remove('wait'); li.classList.add('ok');
+        $('.s', li).innerHTML = ic('check-b', 15);
+        $('.r', li).innerHTML = res[li.dataset.k];
+        if (n === 3) $('#join').disabled = false;
+      }, n*650 + 600));
+    });
+  }
+  $$('.sw').forEach(s => s.addEventListener('click', () => s.setAttribute('aria-checked', s.getAttribute('aria-checked') === 'true' ? 'false' : 'true')));
+  $('#join').addEventListener('click', () => {
+    R.cam = $('#sw-cam').getAttribute('aria-checked') === 'true';
+    R.mic = $('#sw-mic').getAttribute('aria-checked') !== 'true';
+    openOverlay('room');
+  });
+
+  /* ---------- Live room ---------- */
+  const PEOPLE = [
+    {n:'Lena M.', me:true}, {n:'Anna K.'}, {n:'Miriam S.'}, {n:'Jana B.'}, {n:'Sophie H.', off:true},
+    {n:'Carla T.'}, {n:'Nele W.'}, {n:'Fatma Y.', off:true}, {n:'Katharina L.'}, {n:'Ronja P.'}
+  ];
+  const TINTS = ['#4A1F33','#35202C','#472537','#2F1C27','#512539','#3A2230','#2E1B25','#43202F'];
+  const ini = n => n.split(' ').map(s => s[0]).join('');
+  const R = {cam:true, mic:false, hand:false, secs:754, timer:0, room:'A', busy:false, pushed:'Vierfüßlerstand · 8 Wiederholungen'};
+  function tiles(){
+    $('#ptiles').innerHTML = PEOPLE.slice(0, 8).map((p, k) => {
+      const off = p.me ? !R.cam : p.off;
+      return '<div class="pt'+(p.me ? ' me' : '')+'" style="background:'+TINTS[k]+'">'+(p.me ? 'Du' : ini(p.n)) +
+        (off ? '<span class="off">'+ic('video-camera-slash', 14)+'</span>' : '') +
+        (p.me && R.hand ? '<span class="hand">'+ic('hand-palm-f', 15)+'</span>' : '') + '</div>';
+    }).join('');
+  }
+  function roomButtons(){
+    const m = $('#rc-mic'), c = $('#rc-cam');
+    m.setAttribute('aria-pressed', String(R.mic)); $('i', m).innerHTML = ic(R.mic ? 'microphone' : 'microphone-slash-f', 22);
+    c.setAttribute('aria-pressed', String(R.cam)); $('i', c).innerHTML = ic(R.cam ? 'video-camera' : 'video-camera-slash', 22);
+    $('#rc-hand').setAttribute('aria-pressed', String(R.hand));
+  }
+  function roomLabel(){ $('#room-label').textContent = R.room === 'A' ? 'Hauptraum · ak-Hebamme' : 'Ersatzraum · ak-Hebamme'; }
+  function setRS(kind, text){ $('#rs').className = 'rs' + (kind === 'warn' ? ' warn' : ''); $('#rs-t').textContent = text; }
+  function roomTick(){
+    R.secs++;
+    const s = R.secs;
+    $('#rtime').textContent = String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s/60)%60).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  }
+  $('#rc-mic').addEventListener('click', () => { R.mic = !R.mic; roomButtons(); toast(R.mic ? 'Dein Mikrofon ist an.' : 'Du bist stumm geschaltet.'); });
+  $('#rc-cam').addEventListener('click', () => { R.cam = !R.cam; roomButtons(); tiles(); });
+  $('#rc-hand').addEventListener('click', () => { R.hand = !R.hand; roomButtons(); tiles(); if (R.hand) toast('Susann sieht, dass du dich meldest.'); });
+  $('#rc-chat').addEventListener('click', () => toast('Chat mit Susann und der Gruppe. Kommt in der echten App.'));
+  $('#rc-leave').addEventListener('click', () => { closeOverlay(); toast('Du hast den Kursraum verlassen. Deine Teilnahme ist gespeichert.'); });
+  function switchRoom(){
+    if (R.busy) return;
+    R.busy = true;
+    const btn = $('#outage'); btn.disabled = true;
+    const fade = on => ['#main-tile', '#ptiles'].forEach(s => $(s).classList.toggle('dim', on));
+    const target = R.room === 'A' ? 'B' : 'A';
+    const name = target === 'B' ? 'Ersatzraum' : 'Hauptraum';
+    setRS('warn', 'Verbindung unterbrochen · verbinde neu …'); fade(true);
+    setTimeout(() => setRS('warn', (R.room === 'A' ? 'Hauptraum' : 'Ersatzraum') + ' gestört · wechsle in den ' + name + ' …'), 1700);
+    setTimeout(() => {
+      R.room = target; roomLabel(); fade(false); syncRoomsAdmin();
+      setRS('ok', name + ' aktiv · alle 9 wieder da');
+      toast('Automatisch gewechselt. Du musstest nichts tun, alle sind mitgekommen.');
+      setTimeout(() => {
+        setRS('ok', 'Live · Verbindung stabil'); R.busy = false; btn.disabled = false;
+        btn.textContent = R.room === 'A' ? 'Prototyp: Ausfall des Hauptraums simulieren' : 'Prototyp: Ausfall des Ersatzraums simulieren';
+      }, 3200);
+    }, 3600);
+  }
+  $('#outage').addEventListener('click', switchRoom);
+
+  /* ---------- Susann: cockpit ---------- */
+  const CK = {live:false, joined:0, t:0, timer:0};
+  function people(){
+    const n = CK.joined;
+    $('#people').innerHTML = PEOPLE.map((p, k) => {
+      let pill = '<span class="soft">angemeldet</span>';
+      if (CK.live){
+        if (k < n) pill = '<span class="soft ok"><span class="dot"></span>im Raum</span>';
+        else if (k === 9) pill = '<span class="soft">noch nicht da</span>';
+        else pill = '<span class="soft warn">Technik-Check</span>';
+      }
+      return '<li class="person"><span class="pav">'+ini(p.n)+'</span><span>'+p.n+'</span>'+pill+'</li>';
+    }).join('');
+    $('#ck-people-h').textContent = CK.live ? n + ' von 10 im Raum' : 'Teilnehmerinnen';
+    $('#ck-meter').style.width = (n / 10 * 100) + '%';
+    $('#ck-count').textContent = n + ' von 10 im Raum';
+  }
+  function ckTime(){ return String(Math.floor(CK.t/60)).padStart(2,'0') + ':' + String(CK.t%60).padStart(2,'0'); }
+  $('#ck-start').addEventListener('click', () => {
+    CK.live = true; CK.joined = 0; CK.t = 0;
+    $('#ck-start').hidden = true; $('#ck-live-acts').hidden = false;
+    $('#ck-card').classList.add('is-live');
+    const st = $('#ck-state'); st.className = 'soft rose'; st.innerHTML = '<span class="dot"></span>live';
+    people();
+    clearInterval(CK.timer);
+    CK.timer = setInterval(() => {
+      CK.t++;
+      if (CK.joined < 9){ CK.joined++; people(); }
+      $('#ck-time').textContent = 'läuft seit ' + ckTime();
+    }, 700);
+    toast('Kurs gestartet. Alle Teilnehmerinnen bekommen eine Nachricht aufs Handy.');
+  });
+  $('#ck-end').addEventListener('click', () => {
+    clearInterval(CK.timer); CK.live = false; CK.joined = 0;
+    $('#ck-start').hidden = false; $('#ck-live-acts').hidden = true;
+    $('#ck-card').classList.remove('is-live');
+    const st = $('#ck-state'); st.className = 'soft'; st.textContent = 'beendet';
+    $('#ck-time').textContent = '';
+    people();
+    toast('Kurs beendet. Anwesenheit für Termin 4 ist gespeichert: 9 von 10.');
+  });
+  function syncRoomsAdmin(){
+    const a = R.room === 'A';
+    $('#rm-a').className = 'soft' + (a ? ' ok' : ''); $('#rm-a').innerHTML = a ? '<span class="dot"></span>aktiv' : 'Standby';
+    $('#rm-b').className = 'soft' + (a ? '' : ' ok'); $('#rm-b').innerHTML = a ? 'Standby' : '<span class="dot"></span>aktiv';
+    $('#ck-switch').innerHTML = ic('arrows-left-right', 18) + (a ? 'Alle in den Ersatzraum schicken' : 'Alle zurück in den Hauptraum');
+  }
+  $('#ck-switch').addEventListener('click', () => {
+    R.room = R.room === 'A' ? 'B' : 'A'; roomLabel(); syncRoomsAdmin();
+    toast(R.room === 'B' ? 'Alle werden in den Ersatzraum geholt. Niemand braucht einen neuen Link.' : 'Alle sind zurück im Hauptraum.');
+  });
+  $$('#pushchips button').forEach(b => b.addEventListener('click', () => {
+    $$('#pushchips button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    R.pushed = b.textContent + ' · 8 Wiederholungen';
+    $('#push-t').textContent = R.pushed;
+    toast('„' + b.textContent + '“ erscheint jetzt bei allen im Kursraum.');
+  }));
+
+  /* ---------- Susann: attendance ---------- */
+  (function(){
+    const dates = ['10.9.','17.9.','24.9.','1.10.','8.10.','15.10.','22.10.','29.10.'];
+    const past = [[1,1,0],[1,1,1],[1,0,1],[1,1,1],[0,1,1],[1,1,1],[1,1,1],[1,1,0],[1,1,1],[1,0,1]];
+    let h = '<thead><tr><th scope="col">Name</th>' + dates.map((d, k) => '<th scope="col"'+(k === 3 ? ' class="today"' : '')+'>'+(k+1)+'<br>'+d+'</th>').join('') + '<th scope="col">Summe</th></tr></thead><tbody>';
+    PEOPLE.forEach((p, r) => {
+      const row = past[r];
+      h += '<tr><td>'+p.n+'</td>' + dates.map((d, k) => k < 3 ? (row[k] ? '<td class="y">✓</td>' : '<td class="n">–</td>') : '<td class="o">·</td>').join('') +
+        '<td class="sum">'+row.reduce((a, b) => a + b, 0)+'/8</td></tr>';
+    });
+    $('#att').innerHTML = h + '</tbody>';
+  })();
+
+  /* ---------- Susann: exercise library ---------- */
+  const LIB = [
+    ['Atem-Wahrnehmung','Wochenbett','anim'],['Beckenboden spüren','Wochenbett','video'],['Aufstehen über die Seite','Wochenbett','anim'],['Sanfte Beckenkippung','Wochenbett','d3'],
+    ['Beckenbrücke','Rückbildung','d3'],['Vierfüßlerstand','Rückbildung','video'],['Seitlage: Muschel','Rückbildung','d3'],['Tiefe Bauchmuskeln aktivieren','Rückbildung','anim'],['Baby rückenschonend heben','Rückbildung','video'],
+    ['Kniebeuge mit Beckenboden','Aufbau','miss'],['Ausfallschritt','Aufbau','miss'],['Laufen vorbereiten','Aufbau','miss']
+  ];
+  const MT = {video:['Video','video','#2C5498'], d3:['3D','d3','#6A2E9D'], anim:['Animation','anim','#C2185B'], miss:['fehlt noch','miss','#A9570A']};
+  function lib(f){
+    $('#lib').innerHTML = LIB.filter(x => f === 'alle' || x[1] === f)
+      .map(x => '<li class="ex"><span><b>'+x[0]+'</b><small>'+x[1]+'</small></span><span class="mt '+MT[x[2]][1]+'">'+MT[x[2]][0]+'</span></li>').join('');
+  }
+  (function(){
+    const counts = {}; LIB.forEach(x => counts[x[2]] = (counts[x[2]] || 0) + 1);
+    $('#lib-sum').textContent = LIB.length + ' Übungen · ' + (counts.miss || 0) + ' ohne Video';
+    const keys = ['video','d3','anim','miss'];
+    $('#libbar').innerHTML = keys.map(k => '<i style="flex:'+(counts[k] || 0)+';background:'+MT[k][2]+'"></i>').join('');
+    $('#libleg').innerHTML = keys.map(k => '<span><i style="background:'+MT[k][2]+'"></i>'+MT[k][0]+' '+(counts[k] || 0)+'</span>').join('');
+  })();
+  $$('#filters button').forEach(b => b.addEventListener('click', () => {
+    $$('#filters button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    lib(b.dataset.f);
+  }));
+  lib('alle');
+
+  /* ---------- Check-in ---------- */
+  $$('.seg').forEach(seg => $$('button', seg).forEach(b => b.addEventListener('click', () => {
+    $$('button', seg).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    const vals = $$('.seg').map(s => $$('button', s).findIndex(x => x.getAttribute('aria-pressed') === 'true'));
+    const res = $('#q-res');
+    if (vals.some(v => v === 2)) res.textContent = 'Danke. Das solltest du mit Susann besprechen. Schreib ihr eine Nachricht, sie meldet sich.';
+    else if (vals.some(v => v === 1)) res.textContent = 'Danke. Sprich das beim nächsten Kurs kurz bei Susann an.';
+    else res.textContent = 'Danke. Alles im grünen Bereich.';
+  })));
+
+  /* ---------- Navigation ---------- */
+  const TABS = {
+    mama:[['heute','Heute','house'],['programm','Programm','calendar-dots'],['live','Live','broadcast'],['ich','Ich','user-circle']],
+    susann:[['cockpit','Kurs','presentation-chart'],['anwesenheit','Anwesenheit','user-check'],['uebungen','Übungen','film-strip']]
+  };
+  const S = {role:'mama', view:'heute', overlay:null};
+  function renderTabs(){
+    $('#tabbar').innerHTML = TABS[S.role].map(t => {
+      const on = t[0] === S.view;
+      return '<button type="button" class="tab" data-view="'+t[0]+'" aria-current="'+on+'">'+ic(on ? t[2] + '-f' : t[2], 23)+t[1]+'</button>';
+    }).join('');
+  }
+  function show(view){
+    closeOverlay(true);
+    S.view = view;
+    $('#toast').classList.remove('show');
+    $$('.view').forEach(v => v.hidden = v.id !== 'v-' + view);
+    renderTabs();
+    $('#scroll').scrollTop = 0;
+    markChips();
+  }
+  function setRole(role){
+    if (S.role === role) return;
+    S.role = role;
+    $$('.role button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.role === role)));
+    $$('.rolepill button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.rp === role)));
+    show(TABS[role][0][0]);
+  }
+  function openOverlay(name){
+    closeOverlay(true);
+    S.overlay = name;
+    $('#o-' + name).hidden = false;
+    $('#app').classList.toggle('dark-top', name === 'player' || name === 'room');
+    if (name === 'player'){ play(false); P.remain = 480; P.easy = false; P.i = 2; loadEx(); }
+    if (name === 'check') runCheck();
+    if (name === 'room'){
+      roomButtons(); tiles(); roomLabel();
+      $('#push-t').textContent = R.pushed;
+      clearInterval(R.timer); R.timer = setInterval(roomTick, 1000);
+      $('#app').classList.add('in-room');
+      const where = R.room === 'A' ? 'im Kursraum' : 'im Ersatzraum';
+      toast(S.role === 'susann' ? 'Du bist als Kursleitung ' + where + '. Alle sehen dein Bild groß.' : 'Du bist ' + where + '. Susann sieht dich.');
+    }
+    markChips();
+  }
+  function closeOverlay(silent){
+    if (!S.overlay) return;
+    if (S.overlay === 'player') play(false);
+    if (S.overlay === 'room'){ clearInterval(R.timer); $('#app').classList.remove('in-room'); }
+    if (S.overlay === 'check') checkTimers.forEach(clearTimeout);
+    $('#o-' + S.overlay).hidden = true;
+    $('#app').classList.remove('dark-top');
+    S.overlay = null;
+    if (!silent) markChips();
+  }
+  function markChips(){
+    const key = S.role + '/' + (S.overlay || S.view);
+    $$('.chip').forEach(c => c.classList.toggle('on', c.dataset.go === key));
+  }
+
+  document.addEventListener('click', e => {
+    const open = e.target.closest('[data-open]');
+    if (open){ openOverlay(open.dataset.open); return; }
+    if (e.target.closest('[data-close]')){ closeOverlay(); return; }
+    const t = e.target.closest('[data-toast]');
+    if (t){ toast(t.dataset.toast); return; }
+    const tab = e.target.closest('[data-view]');
+    if (tab){ show(tab.dataset.view); return; }
+    const vg = e.target.closest('[data-view-go]');
+    if (vg){ show(vg.dataset.viewGo); return; }
+    const go = e.target.closest('[data-go]');
+    if (go){
+      const parts = go.dataset.go.split('/');
+      setRole(parts[0]);
+      if (['player','check','room'].includes(parts[1])){
+        show(parts[1] === 'player' ? 'heute' : 'live');
+        openOverlay(parts[1]);
+      } else show(parts[1]);
+      if (window.matchMedia('(max-width: 940px)').matches) $('.phone').scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+    const rp = e.target.closest('.rolepill button');
+    if (rp){ setRole(rp.dataset.rp); return; }
+    const rb = e.target.closest('.role button');
+    if (rb) setRole(rb.dataset.role);
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-open][tabindex]')){ e.preventDefault(); openOverlay(e.target.dataset.open); }
+  });
+
+  hydrate(document);
+  renderTabs();
+  people();
+  syncRoomsAdmin();
+  markChips();
+})();
+</script>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  function apply(){
+    var on = q.get('app') === '1' || (q.get('app') !== '0' && (standalone || window.matchMedia('(max-width: 600px)').matches));
+    document.body.classList.toggle('appmode', on);
+  }
+  apply(); window.addEventListener('resize', apply);
+  if ('serviceWorker' in navigator) window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+})();
+</script>
+</body>
+</html>
